@@ -1,0 +1,7 @@
+.calculator-description {
+    background-color: var(--surface-color);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}

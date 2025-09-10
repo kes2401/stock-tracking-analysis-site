@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { trackedStocks } from './config/stocks';
 import { calculatorList } from './config/calculators';
+import DcfCalculator from './calculators/DcfCalculator.jsx';
 
 function App() {
   // 'useState' is a React Hook to manage state.
@@ -75,7 +76,11 @@ function App() {
               </select>
             </div>
             <div id="calc-content" className="content-area">
-              <p>Content for the {selectedCalculator} calculator will be displayed here.</p>
+              {/* Conditionally render the selected calculator component */}
+              {selectedCalculator === 'dcf' && <DcfCalculator />}
+
+              {/* Add other calculators here as we build them */}
+              {selectedCalculator !== 'dcf' && <p>This calculator has not been built yet.</p>}
             </div>
           </section>
         )}

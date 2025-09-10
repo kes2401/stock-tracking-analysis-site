@@ -8,4 +8,5 @@ export const calculatorList = [
     { id: 'peter_lynch', name: 'Peter Lynch' },
     { id: 'ben_graham', name: 'Ben Graham' },
     { id: 'ten_cap', name: 'Ten Cap' },
+    { id: 'margin_of_safety', name: 'Margin of Safety Model' }
 ];
