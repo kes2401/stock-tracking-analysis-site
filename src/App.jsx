@@ -2,19 +2,42 @@ import { useState } from 'react';
 import { trackedStocks } from './config/stocks';
 import { calculatorList } from './config/calculators';
 import DcfCalculator from './calculators/DcfCalculator.jsx';
+import PeterLynchCalculator from './calculators/PeterLynchCalculator.jsx';
 
 function App() {
   // 'useState' is a React Hook to manage state.
   // 'activeSection' holds the ID of the currently visible section.
   // 'setActiveSection' is the function to update it.
   const [activeSection, setActiveSection] = useState('Stocks');
-  
+
   // State for the currently selected stock ticker. Initialize with the first stock.
   const [selectedStock, setSelectedStock] = useState(trackedStocks[0]?.ticker || '');
-  
+
   // State for the currently selected calculator.
   const [selectedCalculator, setSelectedCalculator] = useState(calculatorList[0]?.id || '');
-  
+
+  // Centralized state for all calculator inputs
+  const [calculatorInputs, setCalculatorInputs] = useState({
+    peter_lynch: {
+      eps: '',
+      epsGrowthRate: '',
+      pegRatio: '1.0',
+      currentPrice: '',
+    },
+    // We will add other calculators here as we build them
+  });
+
+  // Function to update the state for a specific calculator
+  const handleCalculatorInputChange = (calculatorId, newInputs) => {
+    setCalculatorInputs((prevInputs) => ({
+      ...prevInputs,
+      [calculatorId]: {
+        ...prevInputs[calculatorId],
+        ...newInputs,
+      },
+    }));
+  };
+
   return (
     <>
       <header className="app-header">
@@ -78,9 +101,17 @@ function App() {
             <div id="calc-content" className="content-area">
               {/* Conditionally render the selected calculator component */}
               {selectedCalculator === 'dcf' && <DcfCalculator />}
+              {selectedCalculator === 'peter_lynch' && (
+                <PeterLynchCalculator
+                  inputs={calculatorInputs.peter_lynch}
+                  onInputChange={(newInputs) => handleCalculatorInputChange('peter_lynch', newInputs)}
+                />
+              )}
 
               {/* Add other calculators here as we build them */}
-              {selectedCalculator !== 'dcf' && <p>This calculator has not been built yet.</p>}
+              {selectedCalculator !== 'dcf' && selectedCalculator !== 'peter_lynch' && (
+                <p>This calculator has not been built yet.</p>
+              )}
             </div>
           </section>
         )}

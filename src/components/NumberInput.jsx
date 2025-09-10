@@ -1,6 +1,6 @@
 import './NumberInput.css';
 
-function NumberInput({ label, description, value, onChange, placeholder, tooltipText }) {
+function NumberInput({ label, description, value, onChange, placeholder, tooltipText, step }) {
   return (
     <div className="input-group">
       <label>
@@ -21,6 +21,7 @@ function NumberInput({ label, description, value, onChange, placeholder, tooltip
         value={value}
         onChange={onChange}
         placeholder={placeholder || '0'}
+        step={step || 'any'}
       />
     </div>
   );

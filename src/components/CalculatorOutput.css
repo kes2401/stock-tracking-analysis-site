@@ -1,0 +1,57 @@
+.output-group {
+    text-align: center;
+}
+
+.output-main {
+    margin-bottom: 1rem;
+}
+
+.output-title {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--on-surface-secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.output-value {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #1976d2; /* Blue */
+}
+
+.output-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.difference-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.comparison-text {
+    font-size: 0.9rem;
+    color: var(--on-surface-secondary-color);
+}
+
+/* Color classes */
+.diff-red {
+    background-color: #d32f2f; /* Red */
+}
+.diff-amber {
+    background-color: #f57c00; /* Amber */
+}
+.diff-light-green {
+    background-color: #689f38; /* Light Green */
+}
+.diff-medium-green {
+    background-color: #388e3c; /* Medium Green */
+}
+.diff-strong-green {
+    background-color: #2e7d32; /* Strong Green */
+}
