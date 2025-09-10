@@ -1,7 +1,8 @@
 :root {
     --bg-color: #121212;
     --surface-color: #1e1e1e;
-    --primary-color: #bb86fc;
+    /* --primary-color: #bb86fc; /* A vibrant purple for accents */
+    --primary-color: #1976d2; /* A clear, professional blue for accents */
     --on-surface-color: #e1e1e1;
     --on-surface-secondary-color: #a0a0a0;
     --border-color: #2c2c2c;
