@@ -16,3 +16,11 @@
     padding: 1.5rem;
     border-radius: 8px;
 }
+
+/* On smaller screens, make both containers full width */
+@media (max-width: 680px) {
+    .calculator-inputs, .calculator-outputs {
+        flex-basis: 100%;
+        min-width: 0; /* Reset min-width to allow full shrinking/growing */
+    }
+}
