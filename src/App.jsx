@@ -3,6 +3,7 @@ import { trackedStocks } from './config/stocks';
 import { calculatorList } from './config/calculators';
 import DcfCalculator from './calculators/DcfCalculator.jsx';
 import PeterLynchCalculator from './calculators/PeterLynchCalculator.jsx';
+import BenGrahamCalculator from './calculators/BenGrahamCalculator.jsx';
 
 function App() {
   // 'useState' is a React Hook to manage state.
@@ -22,6 +23,13 @@ function App() {
       eps: '',
       epsGrowthRate: '',
       pegRatio: '1.0',
+      currentPrice: '',
+    },
+    ben_graham: {
+      eps: '',
+      epsGrowthRate: '',
+      avgYield: '4.4',
+      currentYield: '',
       currentPrice: '',
     },
     // We will add other calculators here as we build them
@@ -107,9 +115,15 @@ function App() {
                   onInputChange={(newInputs) => handleCalculatorInputChange('peter_lynch', newInputs)}
                 />
               )}
+              {selectedCalculator === 'ben_graham' && (
+                <BenGrahamCalculator
+                  inputs={calculatorInputs.ben_graham}
+                  onInputChange={(newInputs) => handleCalculatorInputChange('ben_graham', newInputs)}
+                />
+              )}
 
               {/* Add other calculators here as we build them */}
-              {selectedCalculator !== 'dcf' && selectedCalculator !== 'peter_lynch' && (
+              {selectedCalculator !== 'dcf' && selectedCalculator !== 'peter_lynch' && selectedCalculator !== 'ben_graham' && (
                 <p>This calculator has not been built yet.</p>
               )}
             </div>
