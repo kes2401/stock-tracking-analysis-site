@@ -16,7 +16,7 @@ function CalculatorOutput({ title, value, difference, getDifferenceColor }) {
           <span className={`difference-badge ${colorClass}`}>
             {difference > 0 ? '+' : ''}{difference.toFixed(1)}%
           </span>
-          <span className="comparison-text">vs. current price</span>
+          <span className="comparison-text">Margin of Safety</span>
         </div>
       )}
     </div>

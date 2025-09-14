@@ -55,7 +55,7 @@ function PeterLynchCalculator({ inputs, onInputChange }) {
       return { fairValue: calculatedFairValue, difference: null };
     }
 
-    const calculatedDifference = ((calculatedFairValue - numCurrentPrice) / numCurrentPrice) * 100;
+    const calculatedDifference = ((calculatedFairValue - numCurrentPrice) / calculatedFairValue) * 100;
     return { fairValue: calculatedFairValue, difference: calculatedDifference };
   }, [inputs]);
 
