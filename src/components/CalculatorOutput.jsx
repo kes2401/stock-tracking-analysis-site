@@ -1,6 +1,6 @@
 import './CalculatorOutput.css';
 
-function CalculatorOutput({ title, value, difference, getDifferenceColor }) {
+function CalculatorOutput({ title, value, difference = null, getDifferenceColor }) {
   const colorClass = getDifferenceColor ? getDifferenceColor(difference) : '';
 
   return (

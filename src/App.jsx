@@ -4,6 +4,7 @@ import { calculatorList } from './config/calculators';
 import DcfCalculator from './calculators/DcfCalculator.jsx';
 import PeterLynchCalculator from './calculators/PeterLynchCalculator.jsx';
 import BenGrahamCalculator from './calculators/BenGrahamCalculator.jsx';
+import RuleOneCalculator from './calculators/RuleOneCalculator.jsx';
 
 function App() {
   // 'useState' is a React Hook to manage state.
@@ -30,6 +31,14 @@ function App() {
       epsGrowthRate: '',
       avgYield: '4.4',
       currentYield: '',
+      currentPrice: '',
+    },
+    rule_one: {
+      eps: '',
+      epsGrowthRate: '',
+      futurePe: '',
+      minRateOfReturn: '15.0',
+      years: '10',
       currentPrice: '',
     },
     // We will add other calculators here as we build them
@@ -121,9 +130,16 @@ function App() {
                   onInputChange={(newInputs) => handleCalculatorInputChange('ben_graham', newInputs)}
                 />
               )}
+              {selectedCalculator === 'rule_one' && (
+                <RuleOneCalculator
+                  inputs={calculatorInputs.rule_one}
+                  onInputChange={(newInputs) => handleCalculatorInputChange('rule_one', newInputs)}
+                />
+              )}
 
               {/* Add other calculators here as we build them */}
-              {selectedCalculator !== 'dcf' && selectedCalculator !== 'peter_lynch' && selectedCalculator !== 'ben_graham' && (
+              {selectedCalculator !== 'dcf' && selectedCalculator !== 'peter_lynch' && selectedCalculator !== 'ben_graham' &&
+                selectedCalculator !== 'rule_one' && (
                 <p>This calculator has not been built yet.</p>
               )}
             </div>
