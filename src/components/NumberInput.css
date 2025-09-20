@@ -23,6 +23,11 @@
     margin-bottom: 0.5rem;
 }
 
+.input-wrapper {
+    position: relative;
+    display: flex;
+}
+
 .number-input {
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
@@ -32,6 +37,32 @@
     font-size: 1rem;
     width: 100%;
     box-sizing: border-box; /* Ensures padding doesn't affect width */
+    -moz-appearance: textfield; /* Firefox */
+}
+
+/* Hide arrows for standard number inputs */
+.number-input::-webkit-outer-spin-button,
+.number-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.stepper {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    bottom: 1px;
+}
+
+.stepper-btn {
+    background: var(--surface-color);
+    border: none;
+    color: var(--on-surface-secondary-color);
+    cursor: pointer;
+    flex: 1;
+    padding: 0 0.5rem;
 }
 
 .tooltip-container {

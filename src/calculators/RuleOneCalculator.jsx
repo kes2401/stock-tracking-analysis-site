@@ -2,52 +2,59 @@ import { useMemo } from 'react';
 import CalculatorLayout from '../components/CalculatorLayout.jsx';
 import NumberInput from '../components/NumberInput.jsx';
 import CalculatorDescription from '../components/CalculatorDescription.jsx';
+import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 
 function RuleOneCalculator({ inputs, onInputChange }) {
   const inputsJsx = (
     <>
       <h3>Inputs</h3>
-      <NumberInput
+      <FormattedNumberInput
         label="Current EPS"
         value={inputs.eps}
         step="0.01"
+        decimalPlaces={2}
         tooltipText="The trailing twelve months (TTM) earnings per share."
         onChange={(e) => onInputChange({ eps: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="Expected EPS Growth Rate (%)"
         description="Phil Town recommends this is not higher than 15%."
         value={inputs.epsGrowthRate}
-        step="0.01"
+        step="0.1"
+        decimalPlaces={1}
         tooltipText="Your conservative estimate of the company's future EPS growth."
         onChange={(e) => onInputChange({ epsGrowthRate: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="Expected Future P/E"
         value={inputs.futurePe}
         step="0.01"
+        decimalPlaces={2}
         tooltipText="The estimated Price-to-Earnings ratio in the future. This can be based on historical averages or analyst estimates."
         onChange={(e) => onInputChange({ futurePe: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="Minimum Acceptable Rate of Return (%)"
         value={inputs.minRateOfReturn}
         step="0.1"
+        decimalPlaces={1}
         tooltipText="The minimum return you require from your investment. Rule #1 investors typically use 15%."
         onChange={(e) => onInputChange({ minRateOfReturn: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="Number of Years"
         value={inputs.years}
         step="1"
+        decimalPlaces={0}
         tooltipText="The number of years to project forward. Rule #1 investors typically use 10 years."
         onChange={(e) => onInputChange({ years: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="Current Stock Price"
         value={inputs.currentPrice}
         step="0.01"
+        decimalPlaces={2}
         onChange={(e) => onInputChange({ currentPrice: e.target.value })}
       />
     </>

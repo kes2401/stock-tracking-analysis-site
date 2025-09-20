@@ -65,10 +65,11 @@ function TenCapCalculator({ inputs, onInputChange }) {
               onChange={(e) => onInputChange({ totalCapEx: e.target.value })}
               disabled={inputs.useDirectMaintCapEx}
             />
-            <NumberInput
+            <FormattedNumberInput
               label="Maint. % of Total"
               value={inputs.maintCapExPercentage}
               step="1"
+              decimalPlaces={0}
               tooltipText="The percentage of Total CapEx you estimate is for maintenance (vs. growth)."
               onChange={(e) => onInputChange({ maintCapExPercentage: e.target.value })}
               disabled={inputs.useDirectMaintCapEx}

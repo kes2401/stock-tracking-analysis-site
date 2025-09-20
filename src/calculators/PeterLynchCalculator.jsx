@@ -2,38 +2,43 @@ import { useState, useMemo } from 'react';
 import CalculatorLayout from '../components/CalculatorLayout.jsx';
 import NumberInput from '../components/NumberInput.jsx';
 import CalculatorDescription from '../components/CalculatorDescription.jsx';
+import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 
 function PeterLynchCalculator({ inputs, onInputChange }) {
   const inputsJsx = (
     <>
       <h3>Inputs</h3>
-      <NumberInput
+      <FormattedNumberInput
         label="Earnings Per Share (EPS)"
         description="Can be found on the income statement."
         value={inputs.eps}
         tooltipText="EPS is a company's profit divided by the outstanding shares of its common stock."
         step="0.01"
+        decimalPlaces={2}
         onChange={(e) => onInputChange({ eps: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="EPS Growth Rate (%)"
         value={inputs.epsGrowthRate}
         tooltipText="The expected annual growth rate of the coming years."
         step="0.1"
+        decimalPlaces={1}
         onChange={(e) => onInputChange({ epsGrowthRate: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="Price/Earnings to Growth (PEG) Ratio"
         value={inputs.pegRatio}
         tooltipText="The PEG ratio is used to determine a stock's value while also factoring in the company's expected earnings growth."
         step="0.1"
+        decimalPlaces={1}
         onChange={(e) => onInputChange({ pegRatio: e.target.value })}
       />
-      <NumberInput
+      <FormattedNumberInput
         label="Current Stock Price"
         value={inputs.currentPrice}
         step="0.01"
+        decimalPlaces={2}
         onChange={(e) => onInputChange({ currentPrice: e.target.value })}
       />
     </>
