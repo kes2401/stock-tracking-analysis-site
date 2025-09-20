@@ -79,3 +79,17 @@
     visibility: visible;
     opacity: 1;
 }
+
+.side-by-side-inputs {
+    display: flex;
+    gap: 1rem;
+}
+
+.input-container {
+    flex: 1;
+    transition: opacity 0.3s ease;
+}
+.input-container.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}

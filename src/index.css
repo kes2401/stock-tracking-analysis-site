@@ -6,6 +6,12 @@
     --on-surface-color: #e1e1e1;
     --on-surface-secondary-color: #a0a0a0;
     --border-color: #2c2c2c;
+
+    /* Semantic colors for outputs */
+    --strong-green-color: #2e7d32;
+    --amber-color: #f57c00;
+    --red-color: #d32f2f;
+    --light-green-color: #689f38;
 }
 
 body {
