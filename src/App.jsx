@@ -6,6 +6,7 @@ import PeterLynchCalculator from './calculators/PeterLynchCalculator.jsx';
 import BenGrahamCalculator from './calculators/BenGrahamCalculator.jsx';
 import RuleOneCalculator from './calculators/RuleOneCalculator.jsx';
 import TenCapCalculator from './calculators/TenCapCalculator.jsx';
+import PriceToFcfCalculator from './calculators/PriceToFcfCalculator.jsx';
 
 function App() {
   // 'useState' is a React Hook to manage state.
@@ -51,6 +52,13 @@ function App() {
       maintCapExPercentage: '50',
       marketCap: '',
       useDirectMaintCapEx: true, // Toggle for which CapEx input to use
+    },
+    price_to_fcf: {
+      fcf: '',
+      fcfChange: '0',
+      fcfMultiple: '',
+      sharesOutstanding: '',
+      currentPrice: '',
     },
     // We will add other calculators here as we build them
   });
@@ -153,10 +161,17 @@ function App() {
                   onInputChange={(newInputs) => handleCalculatorInputChange('ten_cap', newInputs)}
                 />
               )}
+              {selectedCalculator === 'price_to_fcf' && (
+                <PriceToFcfCalculator
+                  inputs={calculatorInputs.price_to_fcf}
+                  onInputChange={(newInputs) => handleCalculatorInputChange('price_to_fcf', newInputs)}
+                />
+              )}
 
               {/* Add other calculators here as we build them */}
               {selectedCalculator !== 'dcf' && selectedCalculator !== 'peter_lynch' && selectedCalculator !== 'ben_graham' &&
-                selectedCalculator !== 'rule_one' && selectedCalculator !== 'ten_cap' && (
+                selectedCalculator !== 'rule_one' && selectedCalculator !== 'ten_cap' &&
+                selectedCalculator !== 'price_to_fcf' && (
                 <p>This calculator has not been built yet.</p>
               )}
             </div>
