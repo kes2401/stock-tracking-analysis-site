@@ -1,6 +1,6 @@
 import './CalculatorOutput.css';
 
-function CalculatorOutput({ title, value, difference = null, getDifferenceColor, isInteger = false }) {
+function CalculatorOutput({ title, value, difference = null, getDifferenceColor, isInteger = false, comparisonText }) {
   const colorClass = getDifferenceColor ? getDifferenceColor(difference) : '';
 
   return (
@@ -15,10 +15,14 @@ function CalculatorOutput({ title, value, difference = null, getDifferenceColor,
       </div>
       {difference !== null && (
         <div className="output-comparison">
-          <span className={`difference-badge ${colorClass}`}>
-            {difference > 0 ? '+' : ''}{difference.toFixed(1)}%
-          </span>
-          <span className="comparison-text">Margin of Safety</span>
+          {comparisonText ? (
+            <span className="comparison-text">{comparisonText}</span>
+          ) : (
+            <>
+              <span className={`difference-badge ${colorClass}`}>{`${difference > 0 ? '+' : ''}${difference.toFixed(1)}%`}</span>
+              <span className="comparison-text">Margin of Safety</span>
+            </>
+          )}
         </div>
       )}
     </div>

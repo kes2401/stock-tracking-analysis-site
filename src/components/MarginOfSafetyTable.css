@@ -1,0 +1,29 @@
+.mos-table-container {
+    margin-top: 48px;
+}
+
+.mos-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden; /* Ensures border-radius is respected by children */
+    border: 1px solid var(--border-color);
+}
+
+.mos-table th,
+.mos-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mos-table th {
+    font-weight: bold;
+    color: var(--on-surface-secondary-color);
+    font-size: 1rem;
+}
+
+.mos-table tbody tr:last-child td {
+    border-bottom: none;
+}

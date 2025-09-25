@@ -124,3 +124,9 @@
     opacity: 0.4;
     pointer-events: none;
 }
+
+.grid-2x2-inputs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}

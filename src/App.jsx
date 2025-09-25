@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { trackedStocks } from './config/stocks';
 import { calculatorList } from './config/calculators';
-import DcfCalculator from './calculators/DcfCalculator.jsx';
 import PeterLynchCalculator from './calculators/PeterLynchCalculator.jsx';
 import BenGrahamCalculator from './calculators/BenGrahamCalculator.jsx';
 import RuleOneCalculator from './calculators/RuleOneCalculator.jsx';
 import TenCapCalculator from './calculators/TenCapCalculator.jsx';
 import PriceToFcfCalculator from './calculators/PriceToFcfCalculator.jsx';
+import DcfCalculator from './calculators/DcfCalculator.jsx';
 
 function App() {
   // 'useState' is a React Hook to manage state.
@@ -22,6 +22,29 @@ function App() {
 
   // Centralized state for all calculator inputs
   const [calculatorInputs, setCalculatorInputs] = useState({
+    dcf: {
+      useFcf: true, // Toggle for FCF vs OCF
+      cashFlow: '',
+      useConstantGrowth: true, // Toggle for growth rate method
+      use10YearProjection: true, // Toggle for projection period
+      constantGrowthRate: '',
+      variableGrowthRate1: '',
+      variableGrowthRate2_4: '',
+      variableGrowthRate5_7: '',
+      variableGrowthRate8_10: '',
+      constantGrowthRate5yr: '',
+      variableGrowthRate5yr_1: '',
+      variableGrowthRate5yr_2_3: '',
+      variableGrowthRate5yr_4_5: '',
+      useTerminalGrowthRate: true, // Toggle for terminal value method
+      terminalGrowthRate: '2.5',
+      terminalMultiple: '',
+      discountRate: '10.0',
+      sharesOutstanding: '',
+      sharesGrowthRate: '0.0',
+      netCash: '',
+      currentPrice: '',
+    },
     peter_lynch: {
       eps: '',
       epsGrowthRate: '',
@@ -136,7 +159,12 @@ function App() {
             </div>
             <div id="calc-content" className="content-area">
               {/* Conditionally render the selected calculator component */}
-              {selectedCalculator === 'dcf' && <DcfCalculator />}
+              {selectedCalculator === 'dcf' && (
+                <DcfCalculator
+                  inputs={calculatorInputs.dcf}
+                  onInputChange={(newInputs) => handleCalculatorInputChange('dcf', newInputs)}
+                />
+              )}
               {selectedCalculator === 'peter_lynch' && (
                 <PeterLynchCalculator
                   inputs={calculatorInputs.peter_lynch}
