@@ -202,7 +202,7 @@ function DcfCalculator({ inputs, onInputChange }) {
     </>
   );
 
-  const { intrinsicValue, difference, futureStockPrice, futurePriceDifference } = useMemo(() => {
+  const { intrinsicValue, difference, futureStockPrice, futurePriceDifference } = useMemo(() => { //
     const numCashFlow = parseFloat(inputs.cashFlow);
     const numDiscountRate = parseFloat(inputs.discountRate) / 100;
     const numShares = parseFloat(inputs.sharesOutstanding);
@@ -211,11 +211,13 @@ function DcfCalculator({ inputs, onInputChange }) {
     const numCurrentPrice = parseFloat(inputs.currentPrice);
     const projectionYears = inputs.use10YearProjection ? 10 : 5;
     
+    const emptyReturn = { intrinsicValue: null, difference: null, futureStockPrice: null, futurePriceDifference: null };
+
     const growthRates = [];
     if (inputs.useConstantGrowth) {
       const rateKey = inputs.use10YearProjection ? 'constantGrowthRate' : 'constantGrowthRate5yr';
       const constantRate = parseFloat(inputs[rateKey]) / 100;
-      if (isNaN(constantRate)) return {};
+      if (isNaN(constantRate)) return emptyReturn;
       for (let i = 0; i < projectionYears; i++) growthRates.push(constantRate);
     } else {
       if (inputs.use10YearProjection) {
@@ -223,13 +225,13 @@ function DcfCalculator({ inputs, onInputChange }) {
         const r2_4 = parseFloat(inputs.variableGrowthRate2_4) / 100;
         const r5_7 = parseFloat(inputs.variableGrowthRate5_7) / 100;
         const r8_10 = parseFloat(inputs.variableGrowthRate8_10) / 100;
-        if (isNaN(r1) || isNaN(r2_4) || isNaN(r5_7) || isNaN(r8_10)) return {};
+        if (isNaN(r1) || isNaN(r2_4) || isNaN(r5_7) || isNaN(r8_10)) return emptyReturn;
         growthRates.push(r1, r2_4, r2_4, r2_4, r5_7, r5_7, r5_7, r8_10, r8_10, r8_10);
       } else { // 5-year projection
         const r1 = parseFloat(inputs.variableGrowthRate5yr_1) / 100;
         const r2_3 = parseFloat(inputs.variableGrowthRate5yr_2_3) / 100;
         const r4_5 = parseFloat(inputs.variableGrowthRate5yr_4_5) / 100;
-        if (isNaN(r1) || isNaN(r2_3) || isNaN(r4_5)) return {};
+        if (isNaN(r1) || isNaN(r2_3) || isNaN(r4_5)) return emptyReturn;
         growthRates.push(r1, r2_3, r2_3, r4_5, r4_5);
       }
     }
@@ -237,14 +239,14 @@ function DcfCalculator({ inputs, onInputChange }) {
     // Validation for terminal growth rate method
     const numTerminalGrowthRate = parseFloat(inputs.terminalGrowthRate) / 100;
     if (inputs.useTerminalGrowthRate && (isNaN(numTerminalGrowthRate) || numDiscountRate <= numTerminalGrowthRate)) {
-      return {};
+      return emptyReturn;
     }
 
     if (
       isNaN(numCashFlow) || isNaN(numDiscountRate) || 
       isNaN(numShares) || isNaN(numNetCash) || isNaN(numSharesGrowthRate) || numShares <= 0
     ) {
-      return {};
+      return emptyReturn;
     }
 
     // 1. Project and discount cash flows for the high-growth period (10 years)
@@ -255,7 +257,7 @@ function DcfCalculator({ inputs, onInputChange }) {
       const growthRate = growthRates[i - 1];
       if (isNaN(growthRate)) {
         // If any growth rate is invalid, stop calculation
-        return {};
+        return emptyReturn;
       }
 
       const projectedCF = lastProjectedCF * (1 + growthRate);
@@ -269,7 +271,7 @@ function DcfCalculator({ inputs, onInputChange }) {
       terminalValue = (lastProjectedCF * (1 + numTerminalGrowthRate)) / (numDiscountRate - numTerminalGrowthRate);
     } else {
       const numTerminalMultiple = parseFloat(inputs.terminalMultiple);
-      if (isNaN(numTerminalMultiple)) return {};
+      if (isNaN(numTerminalMultiple)) return emptyReturn;
       terminalValue = lastProjectedCF * numTerminalMultiple;
     }
     const discountedTerminalValue = terminalValue / Math.pow(1 + numDiscountRate, projectionYears);
@@ -295,7 +297,7 @@ function DcfCalculator({ inputs, onInputChange }) {
     let calculatedFuturePriceDifference = null;
 
     if (isNaN(numCurrentPrice) || numCurrentPrice <= 0) {
-      return { intrinsicValue: calculatedIntrinsicValue, futureStockPrice: calculatedFutureStockPrice };
+      return { intrinsicValue: calculatedIntrinsicValue, difference: null, futureStockPrice: calculatedFutureStockPrice, futurePriceDifference: null };
     }
 
     calculatedDifference = ((calculatedIntrinsicValue - numCurrentPrice) / calculatedIntrinsicValue) * 100;
@@ -324,31 +326,33 @@ function DcfCalculator({ inputs, onInputChange }) {
             difference={difference}
             getDifferenceColor={getDifferenceColor}
           />
-          {futureStockPrice !== null && (
+          {futureStockPrice !== null && intrinsicValue !== null && (
             <>
               <div>
                 <CalculatorOutput
                   title={`Implied Future Price (Year ${inputs.use10YearProjection ? 10 : 5})`}
                   value={futureStockPrice}
                   difference={futurePriceDifference}
-                  comparisonText={`${futurePriceDifference > 0 ? '+' : ''}${futurePriceDifference.toFixed(1)}% vs. current stock price`}
+                  comparisonText={futurePriceDifference !== null ? `${futurePriceDifference > 0 ? '+' : ''}${futurePriceDifference.toFixed(1)}% vs. current stock price` : undefined}
                 />
               </div>
               <MarginOfSafetyTable intrinsicValue={intrinsicValue} />
-              <CagrTable
-                buyPrices={[
-                  ...(!isNaN(parseFloat(inputs.currentPrice)) && parseFloat(inputs.currentPrice) > 0
-                    ? [{ label: 'Current Price', price: parseFloat(inputs.currentPrice) }]
-                    : []),
-                  { label: 'Intrinsic Value', price: intrinsicValue },
-                  ...[10, 20, 30, 40, 50].map((mos) => ({
-                    label: `${mos}% Margin of Safety`,
-                    price: intrinsicValue * (1 - mos / 100),
-                  })),
-                ]}
-                futureStockPrice={futureStockPrice}
-                projectionYears={inputs.use10YearProjection ? 10 : 5}
-              />
+              {intrinsicValue > 0 && (
+                <CagrTable
+                  buyPrices={[
+                    ...(!isNaN(parseFloat(inputs.currentPrice)) && parseFloat(inputs.currentPrice) > 0
+                      ? [{ label: 'Current Price', price: parseFloat(inputs.currentPrice) }]
+                      : []),
+                    { label: 'Intrinsic Value', price: intrinsicValue },
+                    ...[10, 20, 30, 40, 50].map((mos) => ({
+                      label: `${mos}% Margin of Safety`,
+                      price: intrinsicValue * (1 - mos / 100),
+                    })),
+                  ]}
+                  futureStockPrice={futureStockPrice}
+                  projectionYears={inputs.use10YearProjection ? 10 : 5}
+                />
+              )}
             </>
           )}
         </>
