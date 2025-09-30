@@ -6,6 +6,7 @@ import BenGrahamCalculator from './calculators/BenGrahamCalculator.jsx';
 import RuleOneCalculator from './calculators/RuleOneCalculator.jsx';
 import TenCapCalculator from './calculators/TenCapCalculator.jsx';
 import PriceToFcfCalculator from './calculators/PriceToFcfCalculator.jsx';
+import MarginOfSafetyCalculator from './calculators/MarginOfSafetyCalculator.jsx';
 import DcfCalculator from './calculators/DcfCalculator.jsx';
 
 function App() {
@@ -82,6 +83,18 @@ function App() {
       fcfMultiple: '',
       sharesOutstanding: '',
       currentPrice: '',
+    },
+    margin_of_safety: {
+      marketCap: '',
+      peRatio: '',
+      psRatio: '',
+      revenueCagr: '',
+      totalAssets: '',
+      totalDebt: '',
+      longTermDebt: '',
+      capEx: '',
+      fcf: '',
+      netCash: '',
     },
     // We will add other calculators here as we build them
   });
@@ -195,11 +208,17 @@ function App() {
                   onInputChange={(newInputs) => handleCalculatorInputChange('price_to_fcf', newInputs)}
                 />
               )}
+              {selectedCalculator === 'margin_of_safety' && (
+                <MarginOfSafetyCalculator
+                  inputs={calculatorInputs.margin_of_safety}
+                  onInputChange={(newInputs) => handleCalculatorInputChange('margin_of_safety', newInputs)}
+                />
+              )}
 
               {/* Add other calculators here as we build them */}
               {selectedCalculator !== 'dcf' && selectedCalculator !== 'peter_lynch' && selectedCalculator !== 'ben_graham' &&
                 selectedCalculator !== 'rule_one' && selectedCalculator !== 'ten_cap' &&
-                selectedCalculator !== 'price_to_fcf' && (
+                selectedCalculator !== 'price_to_fcf' && selectedCalculator !== 'margin_of_safety' && (
                 <p>This calculator has not been built yet.</p>
               )}
             </div>
