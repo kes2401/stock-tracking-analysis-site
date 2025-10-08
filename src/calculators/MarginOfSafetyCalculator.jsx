@@ -101,7 +101,10 @@ function MarginOfSafetyCalculator({ inputs, onInputChange }) {
     setPrediction(null);
 
     try {
-      const response = await fetch('/api/predict', {
+      // Replace this with your actual Hugging Face Space URL
+      const apiUrl = 'https://keskid83-stock-analysis-api.hf.space/predict';
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
