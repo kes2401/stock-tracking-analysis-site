@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import CalculatorLayout from '../components/CalculatorLayout.jsx';
 import CalculatorDescription from '../components/CalculatorDescription.jsx';
 import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
@@ -90,19 +90,17 @@ function MarginOfSafetyCalculator({ inputs, onInputChange }) {
     </>
   );
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!isFormValid) {
       setError("Please fill in all input fields before calculating.");
       return;
     }
-
     setIsLoading(true);
     setError(null);
     setPrediction(null);
 
     try {
       const apiUrl = 'https://keskid83-stock-analysis-api.hf.space/predict';
-
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -129,7 +127,7 @@ function MarginOfSafetyCalculator({ inputs, onInputChange }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [inputs, isFormValid]);
 
   const outputs = (
     <>
