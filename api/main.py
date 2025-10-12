@@ -25,6 +25,10 @@ except FileNotFoundError as e:
     scaler = None
     print(f"Error loading model/scaler: {e}")
 
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({"status": "ok", "message": "API is running"}), 200
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
