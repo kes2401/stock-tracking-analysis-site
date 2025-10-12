@@ -101,7 +101,6 @@ function MarginOfSafetyCalculator({ inputs, onInputChange }) {
     setPrediction(null);
 
     try {
-      // Replace this with your actual Hugging Face Space URL
       const apiUrl = 'https://keskid83-stock-analysis-api.hf.space/predict';
 
       const response = await fetch(apiUrl, {
@@ -113,8 +112,14 @@ function MarginOfSafetyCalculator({ inputs, onInputChange }) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        } else {
+          const textError = await response.text();
+          throw new Error(`HTTP error! status: ${response.status}, message: ${textError}`);
+        }
       }
 
       const result = await response.json();
