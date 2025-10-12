@@ -51,7 +51,7 @@ def predict():
     scaled_features = scaler.transform(input_features)
     prediction = model.predict(scaled_features)
 
-    response = {"predicted_margin_of_safety": prediction[0]}
+    response = {"predicted_margin_of_safety": float(prediction[0])}
     return jsonify(response)
 
 if __name__ == '__main__':
