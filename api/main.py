@@ -2,6 +2,7 @@ import json
 import pickle
 import numpy as np
 import os
+import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -47,8 +48,8 @@ def predict():
             value = value / 100
         input_values.append(value)
 
-    input_features = np.array(input_values).reshape(1, -1)
-    scaled_features = scaler.transform(input_features)
+    input_df = pd.DataFrame([input_values], columns=feature_order)
+    scaled_features = scaler.transform(input_df)
     prediction = model.predict(scaled_features)
 
     response = {"predicted_margin_of_safety": float(prediction[0])}
