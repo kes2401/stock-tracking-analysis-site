@@ -37,18 +37,30 @@ def predict():
         return jsonify({"error": "Model or scaler not loaded on the server."}), 500
 
     data = request.get_json()
-    feature_order = ['marketCap', 'peRatio', 'psRatio', 'revenueCagr', 'totalAssets', 'totalDebt', 'longTermDebt', 'capEx', 'fcf', 'netCash']
     
-    input_values = []
-    for feature in feature_order:
-        value = float(data.get(feature) or 0)
-        if feature == 'capEx':
-            value = -value
-        elif feature == 'revenueCagr':
-            value = value / 100
-        input_values.append(value)
+    # The exact column names and order from model training
+    model_feature_order = [
+        'P/S Ratio', 'Total Debt', 'Free Cash Flow', 'Capital Expenditure', 
+        'Long-Term Debt', 'Net Cash', 'P/E Ratio', 'Market Cap', 
+        'Revenue 3yr CAGR', 'Total Assets'
+    ]
 
-    input_df = pd.DataFrame([input_values], columns=feature_order)
+    # Map incoming JSON keys to the model's expected feature names and order
+    input_data = {
+        'P/S Ratio': float(data.get('psRatio', 0)),
+        'Total Debt': float(data.get('totalDebt', 0)),
+        'Free Cash Flow': float(data.get('fcf', 0)),
+        'Capital Expenditure': -float(data.get('capEx', 0)), # Negate CapEx
+        'Long-Term Debt': float(data.get('longTermDebt', 0)),
+        'Net Cash': float(data.get('netCash', 0)),
+        'P/E Ratio': float(data.get('peRatio', 0)),
+        'Market Cap': float(data.get('marketCap', 0)),
+        'Revenue 3yr CAGR': float(data.get('revenueCagr', 0)) / 100, # Convert to decimal
+        'Total Assets': float(data.get('totalAssets', 0))
+    }
+
+    # Create the DataFrame with the correct column order
+    input_df = pd.DataFrame([input_data], columns=model_feature_order)
     scaled_features = scaler.transform(input_df)
     prediction = model.predict(scaled_features)
 
