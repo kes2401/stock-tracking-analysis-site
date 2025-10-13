@@ -4,11 +4,17 @@ import NumberInput from '../components/NumberInput.jsx';
 import CalculatorDescription from '../components/CalculatorDescription.jsx';
 import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
+import '../components/ClearButton.css';
 
 function PeterLynchCalculator({ inputs, onInputChange, onReset }) {
   const inputsJsx = (
     <>
-      <h3>Inputs</h3>
+      <div className="inputs-header">
+        <h3>Inputs</h3>
+        <button onClick={onReset} className="clear-button">
+          Clear All Fields
+        </button>
+      </div>
       <FormattedNumberInput
         label="Earnings Per Share (EPS)"
         description="Can be found on the income statement."
@@ -76,9 +82,6 @@ function PeterLynchCalculator({ inputs, onInputChange, onReset }) {
   const outputs = (
     <>
       <h3>Results</h3>
-      <button onClick={onReset} className="reset-button" style={{ width: '100%', marginBottom: '2rem' }}>
-        Reset
-      </button>
       {fairValue !== null ? (
         <CalculatorOutput
           title="Peter Lynch Fair Value"

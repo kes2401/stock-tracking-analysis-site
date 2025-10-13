@@ -3,6 +3,7 @@ import CalculatorLayout from '../components/CalculatorLayout.jsx';
 import CalculatorDescription from '../components/CalculatorDescription.jsx';
 import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
+import '../components/ClearButton.css';
 
 function MarginOfSafetyCalculator({ inputs, onInputChange, onReset }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +16,12 @@ function MarginOfSafetyCalculator({ inputs, onInputChange, onReset }) {
 
   const inputsJsx = (
     <>
-      <h3>Inputs</h3>
+      <div className="inputs-header">
+        <h3>Inputs</h3>
+        <button onClick={onReset} className="clear-button">
+          Clear All Fields
+        </button>
+      </div>
       <FormattedNumberInput
         label="Market Cap"
         value={inputs.marketCap}
@@ -135,9 +141,6 @@ function MarginOfSafetyCalculator({ inputs, onInputChange, onReset }) {
       <div className="button-group">
         <button onClick={handleSubmit} disabled={isLoading || !isFormValid} className="calculate-button">
           {isLoading ? 'Calculating...' : 'Calculate Margin of Safety'}
-        </button>
-        <button onClick={onReset} className="reset-button">
-          Reset
         </button>
       </div>
       {!isFormValid && !isLoading && (

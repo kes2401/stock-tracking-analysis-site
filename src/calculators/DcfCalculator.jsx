@@ -6,6 +6,7 @@ import ToggleSwitch from '../components/ToggleSwitch.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 import CagrTable from '../components/CagrTable.jsx';
 import MarginOfSafetyTable from '../components/MarginOfSafetyTable.jsx';
+import '../components/ClearButton.css';
 
 function DcfCalculator({ inputs, onInputChange, onReset }) {
   const handleCashFlowToggle = () => {
@@ -31,7 +32,12 @@ function DcfCalculator({ inputs, onInputChange, onReset }) {
 
   const inputsJsx = (
     <>
-      <h3>Inputs</h3>
+      <div className="inputs-header">
+        <h3>Inputs</h3>
+        <button onClick={onReset} className="clear-button">
+          Clear All Fields
+        </button>
+      </div>
       <ToggleSwitch
         isToggled={!inputs.useFcf}
         onToggle={handleCashFlowToggle}
@@ -318,9 +324,6 @@ function DcfCalculator({ inputs, onInputChange, onReset }) {
   const outputs = (
     <>
       <h3>Results</h3>
-      <button onClick={onReset} className="reset-button" style={{ width: '100%', marginBottom: '2rem' }}>
-        Reset
-      </button>
       {intrinsicValue !== null ? (
         <>
           <CalculatorOutput

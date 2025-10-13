@@ -1,0 +1,30 @@
+.inputs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem; /* Add gap for when it wraps */
+    margin-bottom: 1.5rem; /* Space below the header/button row */
+}
+
+.inputs-header h3 {
+    margin: 0; /* Remove default h3 margin */
+}
+
+.clear-button {
+    background-color: var(--surface-color);
+    color: var(--on-surface-secondary-color);
+    border: 1px solid var(--outline-color);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap; /* Prevent text from wrapping inside the button */
+}
+
+.clear-button:hover {
+    background-color: var(--surface-variant-color);
+    color: var(--on-surface-color);
+}
