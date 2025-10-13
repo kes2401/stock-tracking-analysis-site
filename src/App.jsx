@@ -149,12 +149,9 @@ function App() {
     });
   };
 
-  // Function to reset a calculator's inputs to their initial state
-  const handleResetCalculator = (calculatorId) => {
-    setCalculatorInputs((prevInputs) => ({
-      ...prevInputs,
-      [calculatorId]: initialCalculatorInputs[calculatorId],
-    }));
+  // Function to reset all calculator inputs to their initial state
+  const handleResetCalculator = () => {
+    setCalculatorInputs(initialCalculatorInputs);
   };
   return (
     <>
@@ -222,49 +219,49 @@ function App() {
                 <DcfCalculator
                   inputs={calculatorInputs.dcf}
                   onInputChange={(newInputs) => handleCalculatorInputChange('dcf', newInputs)}
-                  onReset={() => handleResetCalculator('dcf')}
+                  onReset={handleResetCalculator}
                 />
               )}
               {selectedCalculator === 'peter_lynch' && (
                 <PeterLynchCalculator
                   inputs={calculatorInputs.peter_lynch}
                   onInputChange={(newInputs) => handleCalculatorInputChange('peter_lynch', newInputs)}
-                  onReset={() => handleResetCalculator('peter_lynch')}
+                  onReset={handleResetCalculator}
                 />
               )}
               {selectedCalculator === 'ben_graham' && (
                 <BenGrahamCalculator
                   inputs={calculatorInputs.ben_graham}
                   onInputChange={(newInputs) => handleCalculatorInputChange('ben_graham', newInputs)}
-                  onReset={() => handleResetCalculator('ben_graham')}
+                  onReset={handleResetCalculator}
                 />
               )}
               {selectedCalculator === 'rule_one' && (
                 <RuleOneCalculator
                   inputs={calculatorInputs.rule_one}
                   onInputChange={(newInputs) => handleCalculatorInputChange('rule_one', newInputs)}
-                  onReset={() => handleResetCalculator('rule_one')}
+                  onReset={handleResetCalculator}
                 />
               )}
               {selectedCalculator === 'ten_cap' && (
                 <TenCapCalculator
                   inputs={calculatorInputs.ten_cap}
                   onInputChange={(newInputs) => handleCalculatorInputChange('ten_cap', newInputs)}
-                  onReset={() => handleResetCalculator('ten_cap')}
+                  onReset={handleResetCalculator}
                 />
               )}
               {selectedCalculator === 'price_to_fcf' && (
                 <PriceToFcfCalculator
                   inputs={calculatorInputs.price_to_fcf}
                   onInputChange={(newInputs) => handleCalculatorInputChange('price_to_fcf', newInputs)}
-                  onReset={() => handleResetCalculator('price_to_fcf')}
+                  onReset={handleResetCalculator}
                 />
               )}
               {selectedCalculator === 'margin_of_safety' && (
                 <MarginOfSafetyCalculator
                   inputs={calculatorInputs.margin_of_safety}
                   onInputChange={(newInputs) => handleCalculatorInputChange('margin_of_safety', newInputs)}
-                  onReset={() => handleResetCalculator('margin_of_safety')}
+                  onReset={handleResetCalculator}
                 />
               )}
 
