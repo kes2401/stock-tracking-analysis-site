@@ -53,6 +53,50 @@ const sharedFieldsConfig = {
   },
 };
 
+const initialCalculatorInputs = {
+  dcf: {
+    useFcf: true,
+    cashFlow: '',
+    useConstantGrowth: true,
+    use10YearProjection: true,
+    constantGrowthRate: '',
+    variableGrowthRate1: '',
+    variableGrowthRate2_4: '',
+    variableGrowthRate5_7: '',
+    variableGrowthRate8_10: '',
+    constantGrowthRate5yr: '',
+    variableGrowthRate5yr_1: '',
+    variableGrowthRate5yr_2_3: '',
+    variableGrowthRate5yr_4_5: '',
+    useTerminalGrowthRate: true,
+    terminalGrowthRate: '2.5',
+    terminalMultiple: '',
+    discountRate: '10.0',
+    sharesOutstanding: '',
+    sharesGrowthRate: '0.0',
+    netCash: '',
+    currentPrice: '',
+  },
+  peter_lynch: { eps: '', epsGrowthRate: '', pegRatio: '1.0', currentPrice: '' },
+  ben_graham: { eps: '', epsGrowthRate: '', avgYield: '4.4', currentYield: '', currentPrice: '' },
+  rule_one: { eps: '', epsGrowthRate: '', futurePe: '', minRateOfReturn: '15.0', years: '10', currentPrice: '' },
+  ten_cap: {
+    netIncome: '',
+    depreciation: '',
+    workingCapital: '',
+    maintCapExDirect: '',
+    totalCapEx: '',
+    maintCapExPercentage: '50',
+    marketCap: '',
+    useDirectMaintCapEx: true,
+  },
+  price_to_fcf: { fcf: '', fcfChange: '0', fcfMultiple: '', sharesOutstanding: '', currentPrice: '' },
+  margin_of_safety: {
+    marketCap: '', peRatio: '', psRatio: '', revenueCagr: '', totalAssets: '',
+    totalDebt: '', longTermDebt: '', capEx: '', fcf: '', netCash: '',
+  },
+};
+
 
 function App() {
   // 'useState' is a React Hook to manage state.
@@ -67,82 +111,7 @@ function App() {
   const [selectedCalculator, setSelectedCalculator] = useState(calculatorList[0]?.id || '');
 
   // Centralized state for all calculator inputs
-  const [calculatorInputs, setCalculatorInputs] = useState({
-    dcf: {
-      useFcf: true, // Toggle for FCF vs OCF
-      cashFlow: '',
-      useConstantGrowth: true, // Toggle for growth rate method
-      use10YearProjection: true, // Toggle for projection period
-      constantGrowthRate: '',
-      variableGrowthRate1: '',
-      variableGrowthRate2_4: '',
-      variableGrowthRate5_7: '',
-      variableGrowthRate8_10: '',
-      constantGrowthRate5yr: '',
-      variableGrowthRate5yr_1: '',
-      variableGrowthRate5yr_2_3: '',
-      variableGrowthRate5yr_4_5: '',
-      useTerminalGrowthRate: true, // Toggle for terminal value method
-      terminalGrowthRate: '2.5',
-      terminalMultiple: '',
-      discountRate: '10.0',
-      sharesOutstanding: '',
-      sharesGrowthRate: '0.0',
-      netCash: '',
-      currentPrice: '',
-    },
-    peter_lynch: {
-      eps: '',
-      epsGrowthRate: '',
-      pegRatio: '1.0',
-      currentPrice: '',
-    },
-    ben_graham: {
-      eps: '',
-      epsGrowthRate: '',
-      avgYield: '4.4',
-      currentYield: '',
-      currentPrice: '',
-    },
-    rule_one: {
-      eps: '',
-      epsGrowthRate: '',
-      futurePe: '',
-      minRateOfReturn: '15.0',
-      years: '10',
-      currentPrice: '',
-    },
-    ten_cap: {
-      netIncome: '',
-      depreciation: '',
-      workingCapital: '',
-      maintCapExDirect: '',
-      totalCapEx: '',
-      maintCapExPercentage: '50',
-      marketCap: '',
-      useDirectMaintCapEx: true, // Toggle for which CapEx input to use
-    },
-    price_to_fcf: {
-      fcf: '',
-      fcfChange: '0',
-      fcfMultiple: '',
-      sharesOutstanding: '',
-      currentPrice: '',
-    },
-    margin_of_safety: {
-      marketCap: '',
-      peRatio: '',
-      psRatio: '',
-      revenueCagr: '',
-      totalAssets: '',
-      totalDebt: '',
-      longTermDebt: '',
-      capEx: '',
-      fcf: '',
-      netCash: '',
-    },
-    // We will add other calculators here as we build them
-  });
+  const [calculatorInputs, setCalculatorInputs] = useState(initialCalculatorInputs);
 
   // Function to update the state for a specific calculator
   const handleCalculatorInputChange = (calculatorId, newInputs) => {
@@ -180,6 +149,13 @@ function App() {
     });
   };
 
+  // Function to reset a calculator's inputs to their initial state
+  const handleResetCalculator = (calculatorId) => {
+    setCalculatorInputs((prevInputs) => ({
+      ...prevInputs,
+      [calculatorId]: initialCalculatorInputs[calculatorId],
+    }));
+  };
   return (
     <>
       <header className="app-header">
@@ -246,42 +222,49 @@ function App() {
                 <DcfCalculator
                   inputs={calculatorInputs.dcf}
                   onInputChange={(newInputs) => handleCalculatorInputChange('dcf', newInputs)}
+                  onReset={() => handleResetCalculator('dcf')}
                 />
               )}
               {selectedCalculator === 'peter_lynch' && (
                 <PeterLynchCalculator
                   inputs={calculatorInputs.peter_lynch}
                   onInputChange={(newInputs) => handleCalculatorInputChange('peter_lynch', newInputs)}
+                  onReset={() => handleResetCalculator('peter_lynch')}
                 />
               )}
               {selectedCalculator === 'ben_graham' && (
                 <BenGrahamCalculator
                   inputs={calculatorInputs.ben_graham}
                   onInputChange={(newInputs) => handleCalculatorInputChange('ben_graham', newInputs)}
+                  onReset={() => handleResetCalculator('ben_graham')}
                 />
               )}
               {selectedCalculator === 'rule_one' && (
                 <RuleOneCalculator
                   inputs={calculatorInputs.rule_one}
                   onInputChange={(newInputs) => handleCalculatorInputChange('rule_one', newInputs)}
+                  onReset={() => handleResetCalculator('rule_one')}
                 />
               )}
               {selectedCalculator === 'ten_cap' && (
                 <TenCapCalculator
                   inputs={calculatorInputs.ten_cap}
                   onInputChange={(newInputs) => handleCalculatorInputChange('ten_cap', newInputs)}
+                  onReset={() => handleResetCalculator('ten_cap')}
                 />
               )}
               {selectedCalculator === 'price_to_fcf' && (
                 <PriceToFcfCalculator
                   inputs={calculatorInputs.price_to_fcf}
                   onInputChange={(newInputs) => handleCalculatorInputChange('price_to_fcf', newInputs)}
+                  onReset={() => handleResetCalculator('price_to_fcf')}
                 />
               )}
               {selectedCalculator === 'margin_of_safety' && (
                 <MarginOfSafetyCalculator
                   inputs={calculatorInputs.margin_of_safety}
                   onInputChange={(newInputs) => handleCalculatorInputChange('margin_of_safety', newInputs)}
+                  onReset={() => handleResetCalculator('margin_of_safety')}
                 />
               )}
 

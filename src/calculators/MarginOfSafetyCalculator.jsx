@@ -4,7 +4,7 @@ import CalculatorDescription from '../components/CalculatorDescription.jsx';
 import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 
-function MarginOfSafetyCalculator({ inputs, onInputChange }) {
+function MarginOfSafetyCalculator({ inputs, onInputChange, onReset }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [prediction, setPrediction] = useState(null);
@@ -132,9 +132,14 @@ function MarginOfSafetyCalculator({ inputs, onInputChange }) {
   const outputs = (
     <>
       <h3>Results</h3>
-      <button onClick={handleSubmit} disabled={isLoading || !isFormValid} className="calculate-button">
-        {isLoading ? 'Calculating...' : 'Calculate Margin of Safety'}
-      </button>
+      <div className="button-group">
+        <button onClick={handleSubmit} disabled={isLoading || !isFormValid} className="calculate-button">
+          {isLoading ? 'Calculating...' : 'Calculate Margin of Safety'}
+        </button>
+        <button onClick={onReset} className="reset-button">
+          Reset
+        </button>
+      </div>
       {!isFormValid && !isLoading && (
         <p style={{ color: 'var(--on-surface-secondary-color)', marginTop: '1rem', fontSize: '0.9rem' }}>
           Please fill in all inputs to enable calculation.

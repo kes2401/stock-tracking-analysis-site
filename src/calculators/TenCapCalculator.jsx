@@ -6,7 +6,7 @@ import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 import ToggleSwitch from '../components/ToggleSwitch.jsx';
 
-function TenCapCalculator({ inputs, onInputChange }) {
+function TenCapCalculator({ inputs, onInputChange, onReset }) {
   const handleToggle = () => {
     onInputChange({ useDirectMaintCapEx: !inputs.useDirectMaintCapEx });
   };
@@ -127,6 +127,9 @@ function TenCapCalculator({ inputs, onInputChange }) {
   const outputs = (
     <>
       <h3>Results</h3>
+      <button onClick={onReset} className="reset-button" style={{ width: '100%', marginBottom: '2rem' }}>
+        Reset
+      </button>
       {ownerEarnings !== null ? (
         <>
           <CalculatorOutput title="Owner Earnings" value={ownerEarnings} isInteger={true} />

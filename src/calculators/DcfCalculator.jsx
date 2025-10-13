@@ -7,7 +7,7 @@ import CalculatorOutput from '../components/CalculatorOutput.jsx';
 import CagrTable from '../components/CagrTable.jsx';
 import MarginOfSafetyTable from '../components/MarginOfSafetyTable.jsx';
 
-function DcfCalculator({ inputs, onInputChange }) {
+function DcfCalculator({ inputs, onInputChange, onReset }) {
   const handleCashFlowToggle = () => {
     onInputChange({ useFcf: !inputs.useFcf });
   };
@@ -318,6 +318,9 @@ function DcfCalculator({ inputs, onInputChange }) {
   const outputs = (
     <>
       <h3>Results</h3>
+      <button onClick={onReset} className="reset-button" style={{ width: '100%', marginBottom: '2rem' }}>
+        Reset
+      </button>
       {intrinsicValue !== null ? (
         <>
           <CalculatorOutput

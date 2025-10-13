@@ -5,7 +5,7 @@ import CalculatorDescription from '../components/CalculatorDescription.jsx';
 import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 
-function PeterLynchCalculator({ inputs, onInputChange }) {
+function PeterLynchCalculator({ inputs, onInputChange, onReset }) {
   const inputsJsx = (
     <>
       <h3>Inputs</h3>
@@ -76,6 +76,9 @@ function PeterLynchCalculator({ inputs, onInputChange }) {
   const outputs = (
     <>
       <h3>Results</h3>
+      <button onClick={onReset} className="reset-button" style={{ width: '100%', marginBottom: '2rem' }}>
+        Reset
+      </button>
       {fairValue !== null ? (
         <CalculatorOutput
           title="Peter Lynch Fair Value"

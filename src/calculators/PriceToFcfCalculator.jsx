@@ -5,7 +5,7 @@ import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import SliderInput from '../components/SliderInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 
-function PriceToFcfCalculator({ inputs, onInputChange }) {
+function PriceToFcfCalculator({ inputs, onInputChange, onReset }) {
   const inputsJsx = (
     <>
       <h3>Inputs</h3>
@@ -83,6 +83,9 @@ function PriceToFcfCalculator({ inputs, onInputChange }) {
   const outputs = (
     <>
       <h3>Results</h3>
+      <button onClick={onReset} className="reset-button" style={{ width: '100%', marginBottom: '2rem' }}>
+        Reset
+      </button>
       {targetBuyPrice !== null ? (
         <CalculatorOutput
           title="Target Buy Price"

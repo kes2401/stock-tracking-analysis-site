@@ -5,7 +5,7 @@ import CalculatorDescription from '../components/CalculatorDescription.jsx';
 import FormattedNumberInput from '../components/FormattedNumberInput.jsx';
 import CalculatorOutput from '../components/CalculatorOutput.jsx';
 
-function RuleOneCalculator({ inputs, onInputChange }) {
+function RuleOneCalculator({ inputs, onInputChange, onReset }) {
   const inputsJsx = (
     <>
       <h3>Inputs</h3>
@@ -105,6 +105,9 @@ function RuleOneCalculator({ inputs, onInputChange }) {
   const outputs = (
     <>
       <h3>Results</h3>
+      <button onClick={onReset} className="reset-button" style={{ width: '100%', marginBottom: '2rem' }}>
+        Reset
+      </button>
       {fairValue !== null ? (
         <>
           <CalculatorOutput
