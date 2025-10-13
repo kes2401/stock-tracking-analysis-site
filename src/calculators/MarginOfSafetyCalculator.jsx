@@ -158,7 +158,7 @@ function MarginOfSafetyCalculator({ inputs, onInputChange }) {
     <>
       <CalculatorDescription>
         <p>
-          This calculator uses a machine learning model to predict a suitable Margin of Safety based on various financial metrics. Enter the required data below and click calculate to get the model's prediction.
+          This calculator uses a machine learning model to predict a suitable Margin of Safety based on various financial metrics. Enter the required data below and click calculate to get the model's prediction. The higher the number the better the predicted margin of safety. Negative number suggest potential overvaluation.
         </p>
         <p>
           This machine learning model was the focus of my Master's research project, and the thesis report can be found at this link: <a href="https://norma.ncirl.ie/8796/" target="_blank" rel="noopener noreferrer" className="description-link">https://norma.ncirl.ie/8796/</a>
