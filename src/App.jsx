@@ -46,6 +46,11 @@ const sharedFieldsConfig = {
     margin_of_safety: { field: 'capEx' },
     ten_cap: { field: 'totalCapEx', condition: (state) => !state.ten_cap.useDirectMaintCapEx },
   },
+  // Market Cap
+  marketCap: {
+    margin_of_safety: { field: 'marketCap' },
+    ten_cap: { field: 'marketCap' },
+  },
 };
 
 
