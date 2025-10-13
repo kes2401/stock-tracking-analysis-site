@@ -9,6 +9,46 @@ import PriceToFcfCalculator from './calculators/PriceToFcfCalculator.jsx';
 import MarginOfSafetyCalculator from './calculators/MarginOfSafetyCalculator.jsx';
 import DcfCalculator from './calculators/DcfCalculator.jsx';
 
+// Configuration for synchronizing input fields across calculators
+const sharedFieldsConfig = {
+  // Free Cash Flow
+  fcf: {
+    dcf: { field: 'cashFlow', condition: (state) => state.dcf.useFcf },
+    price_to_fcf: { field: 'fcf' },
+    margin_of_safety: { field: 'fcf' },
+  },
+  // Current Stock Price
+  currentPrice: {
+    dcf: { field: 'currentPrice' },
+    price_to_fcf: { field: 'currentPrice' },
+    rule_one: { field: 'currentPrice' },
+    peter_lynch: { field: 'currentPrice' },
+    ben_graham: { field: 'currentPrice' },
+  },
+  // Shares Outstanding
+  sharesOutstanding: {
+    dcf: { field: 'sharesOutstanding' },
+    price_to_fcf: { field: 'sharesOutstanding' },
+  },
+  // Net Cash
+  netCash: {
+    dcf: { field: 'netCash' },
+    margin_of_safety: { field: 'netCash' },
+  },
+  // Current EPS
+  eps: {
+    rule_one: { field: 'eps' },
+    peter_lynch: { field: 'eps' },
+    ben_graham: { field: 'eps' },
+  },
+  // Capital Expenditure
+  capEx: {
+    margin_of_safety: { field: 'capEx' },
+    ten_cap: { field: 'totalCapEx', condition: (state) => !state.ten_cap.useDirectMaintCapEx },
+  },
+};
+
+
 function App() {
   // 'useState' is a React Hook to manage state.
   // 'activeSection' holds the ID of the currently visible section.
@@ -101,13 +141,38 @@ function App() {
 
   // Function to update the state for a specific calculator
   const handleCalculatorInputChange = (calculatorId, newInputs) => {
-    setCalculatorInputs((prevInputs) => ({
-      ...prevInputs,
-      [calculatorId]: {
-        ...prevInputs[calculatorId],
+    setCalculatorInputs((currentInputs) => {
+      // Create a mutable copy of the state to apply updates
+      const nextInputs = { ...currentInputs };
+
+      // 1. Apply the direct change from the user's input
+      nextInputs[calculatorId] = {
+        ...nextInputs[calculatorId],
         ...newInputs,
-      },
-    }));
+      };
+
+      // 2. Handle synchronization for shared fields
+      const changedInputKey = Object.keys(newInputs)[0];
+      const changedValue = newInputs[changedInputKey];
+
+      // Find which sync group, if any, this change belongs to
+      for (const group of Object.values(sharedFieldsConfig)) {
+        const syncConfig = group[calculatorId];
+        if (syncConfig && syncConfig.field === changedInputKey) {
+          // This is a shared field, so update all other calculators in the same group
+          for (const [otherCalcId, otherSyncConfig] of Object.entries(group)) {
+            if (otherCalcId !== calculatorId) {
+              // Check if the synchronization is conditional
+              if (!otherSyncConfig.condition || otherSyncConfig.condition(nextInputs)) {
+                nextInputs[otherCalcId][otherSyncConfig.field] = changedValue;
+              }
+            }
+          }
+        }
+      }
+
+      return nextInputs;
+    });
   };
 
   return (
