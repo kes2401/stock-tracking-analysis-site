@@ -8,6 +8,7 @@ import TenCapCalculator from './calculators/TenCapCalculator.jsx';
 import PriceToFcfCalculator from './calculators/PriceToFcfCalculator.jsx';
 import MarginOfSafetyCalculator from './calculators/MarginOfSafetyCalculator.jsx';
 import DcfCalculator from './calculators/DcfCalculator.jsx';
+import FearAndGreedPage from './pages/FearAndGreedPage.jsx';
 
 // Configuration for synchronizing input fields across calculators
 const sharedFieldsConfig = {
@@ -166,6 +167,11 @@ function App() {
           Stock Tracker
         </button>
         <button
+          className={`tab-link ${activeSection === 'FearAndGreed' ? 'active' : ''}`}
+          onClick={() => setActiveSection('FearAndGreed')}>
+          Fear & Greed
+        </button>
+        <button
           className={`tab-link ${activeSection === 'Calculators' ? 'active' : ''}`}
           onClick={() => setActiveSection('Calculators')}>
           Calculators
@@ -192,6 +198,13 @@ function App() {
             <div id="stock-content" className="content-area">
               <p>Content for {selectedStock} will be displayed here.</p>
             </div>
+          </section>
+        )}
+
+        {/* Fear & Greed Section - Conditionally rendered */}
+        {activeSection === 'FearAndGreed' && (
+          <section id="FearAndGreed" className="tab-content" style={{ display: 'block' }}>
+            <FearAndGreedPage />
           </section>
         )}
 
