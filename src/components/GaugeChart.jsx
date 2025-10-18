@@ -40,7 +40,7 @@ const GaugeChart = ({ score, rating }) => {
 
   return (
     <div className="gauge-container">
-      <svg viewBox="0 0 200 120" className="gauge-svg">
+      <svg viewBox="0 0 200 125" className="gauge-svg">
         {/* Gauge Arcs */}
         {segments.map(segment => (
           <path

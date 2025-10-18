@@ -96,6 +96,9 @@ function FearAndGreedPage() {
           <p className="last-updated-text">
             Last updated: {lastUpdated.toLocaleString()}
           </p>
+          <p className="data-source-text">
+            Data source: <a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener noreferrer">CNN Business</a>
+          </p>
         </div>
       )}
     </div>
