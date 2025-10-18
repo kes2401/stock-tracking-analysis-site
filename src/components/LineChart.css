@@ -1,0 +1,56 @@
+.line-chart-container {
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.line-chart-svg {
+    width: 100%;
+    height: auto;
+}
+
+.line-chart-svg .grid-line line {
+    stroke: var(--border-color);
+    stroke-width: 1;
+    stroke-dasharray: 2, 2;
+}
+
+.line-chart-svg text {
+    font-size: 10px;
+    fill: var(--on-surface-secondary-color);
+}
+
+.line-chart-svg .line {
+    stroke-width: 2;
+}
+
+.sp500-line {
+    stroke: #8ab4f8;
+}
+
+.moving-average-line {
+    stroke: #f57c00;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+}
+
+.sp500-color { background-color: #8ab4f8; }
+.moving-average-color { background-color: #f57c00; }

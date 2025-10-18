@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import GaugeChart from '../components/GaugeChart.jsx';
+import RechartsLineChart from '../components/RechartsLineChart.jsx';
 import './FearAndGreedPage.css';
 
 const API_URL = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
@@ -64,7 +65,26 @@ function FearAndGreedPage() {
     return <div className="status-message">No data available.</div>;
   }
 
-  const { score, rating, previous_close, previous_1_week, previous_1_month, previous_1_year } = data.fear_and_greed;
+  const { score, rating } = data.fear_and_greed;
+  const { previous_close, previous_1_week, previous_1_month, previous_1_year } = data.fear_and_greed;
+
+  const sp500ApiData = data.market_momentum_sp500.data;
+  const movingAvgApiData = data.market_momentum_sp125.data;
+
+  // Create a map for quick lookup of moving average values by timestamp
+  const movingAvgMap = new Map(movingAvgApiData.map(p => [p.x, p.y]));
+
+  // Pre-process and merge data for the line chart.
+  const marketMomentumData = sp500ApiData
+    .filter(point => point.y !== null && !isNaN(point.y)) // Ensure S&P value is valid
+    .map(point => {
+      const maValue = movingAvgMap.get(point.x);
+      return {
+        x: point.x,
+        y: Number(point.y),
+        moving_average: maValue === null || isNaN(maValue) ? undefined : Number(maValue),
+      };
+    });
 
   return (
     <div className="fear-and-greed-container">
@@ -90,6 +110,10 @@ function FearAndGreedPage() {
           <span className="label">1 Year Ago</span>
           <span className="value">{previous_1_year.toFixed(0)}</span>
         </div>
+      </div>
+      <div className="market-momentum-section">
+        <h3 className="chart-title">Market Momentum: S&P 500 vs 125-Day Average</h3>
+        <RechartsLineChart data={marketMomentumData} />
       </div>
       {lastUpdated && (
         <div className="last-updated-container">
