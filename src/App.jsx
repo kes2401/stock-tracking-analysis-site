@@ -169,7 +169,7 @@ function App() {
         <button
           className={`tab-link ${activeSection === 'FearAndGreed' ? 'active' : ''}`}
           onClick={() => setActiveSection('FearAndGreed')}>
-          Fear & Greed
+          Fear & Greed Index
         </button>
         <button
           className={`tab-link ${activeSection === 'Calculators' ? 'active' : ''}`}
