@@ -16,19 +16,19 @@
 
 /* Arc Colors */
 .arc-extreme-fear {
-  stroke: #c0392b; /* Red */
+  stroke: #c0392b;
 }
 .arc-fear {
-  stroke: #e67e22; /* Orange */
+  stroke: #e67e22;
 }
 .arc-neutral {
-  stroke: #f1c40f; /* Yellow */
+  stroke: #f39c12; /* Switched to a darker yellow for better visibility */
 }
 .arc-greed {
-  stroke: #27ae60; /* Green */
+  stroke: #27ae60;
 }
 .arc-extreme-greed {
-  stroke: #229954; /* Darker Green */
+  stroke: #229954;
 }
 
 .gauge-labels {
@@ -45,20 +45,22 @@
 }
 
 .gauge-center {
-  fill: var(--on-surface-color);
+  fill: #555; /* Darker center for the needle */
 }
 
 .gauge-needle {
-  fill: var(--on-surface-color);
-  stroke: var(--on-surface-color);
+  fill: #aaa; /* Darker needle */
+  stroke: #555;
   stroke-width: 0.5;
 }
 
 .gauge-score {
-  font-size: 24px;
+  font-size: 28px; /* Slightly larger score */
   font-weight: 700;
   text-anchor: middle;
   fill: var(--on-surface-color);
+  stroke: #555;
+  stroke-width: 0.4px;
 }
 
 .gauge-rating {
@@ -66,11 +68,13 @@
   font-weight: 500;
   text-anchor: middle;
   text-transform: uppercase;
+  stroke: #555;
+  stroke-width: 0.4px;
 }
 
 /* Rating Colors */
 .extreme-fear { fill: #c0392b; }
 .fear { fill: #e67e22; }
-.neutral { fill: #f1c40f; }
+.neutral { fill: #f39c12; }
 .greed { fill: #27ae60; }
 .extreme-greed { fill: #229954; }

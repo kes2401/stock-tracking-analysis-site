@@ -51,7 +51,7 @@ const GaugeChart = ({ score, rating }) => {
         ))}
 
         {/* Invisible path for text to follow */}
-        <path id="gauge-text-path" d={describeArc(100, 100, 90, -Math.PI, 0)} fill="none" />
+        <path id="gauge-text-path" d={describeArc(100, 100, 95, -Math.PI, 0)} fill="none" />
 
         {/* Arc Labels */}
         <text className="gauge-labels">
