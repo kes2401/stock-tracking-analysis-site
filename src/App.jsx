@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { trackedStocks } from './config/stocks';
+import { trackedStocks as defaultStocks } from './config/stocks';
 import { calculatorList } from './config/calculators';
 import PeterLynchCalculator from './calculators/PeterLynchCalculator.jsx';
 import BenGrahamCalculator from './calculators/BenGrahamCalculator.jsx';
@@ -9,6 +9,7 @@ import PriceToFcfCalculator from './calculators/PriceToFcfCalculator.jsx';
 import MarginOfSafetyCalculator from './calculators/MarginOfSafetyCalculator.jsx';
 import DcfCalculator from './calculators/DcfCalculator.jsx';
 import FearAndGreedPage from './pages/FearAndGreedPage.jsx';
+import StockTrackerPage from './pages/StockTrackerPage.jsx';
 
 // Configuration for synchronizing input fields across calculators
 const sharedFieldsConfig = {
@@ -104,10 +105,7 @@ function App() {
   // 'activeSection' holds the ID of the currently visible section.
   // 'setActiveSection' is the function to update it.
   const [activeSection, setActiveSection] = useState('Stocks');
-
-  // State for the currently selected stock ticker. Initialize with the first stock.
-  const [selectedStock, setSelectedStock] = useState(trackedStocks[0]?.ticker || '');
-
+  
   // State for the currently selected calculator.
   const [selectedCalculator, setSelectedCalculator] = useState(calculatorList[0]?.id || '');
 
@@ -182,22 +180,7 @@ function App() {
         {/* Stock Tracker Section - Conditionally rendered */}
         {activeSection === 'Stocks' && (
           <section id="Stocks" className="tab-content" style={{ display: 'block' }}>
-            <div className="sub-nav-container">
-              <label htmlFor="stock-select">Select Stock:</label>
-              <select 
-                id="stock-select" 
-                className="dropdown-nav" 
-                value={selectedStock}
-                onChange={(e) => setSelectedStock(e.target.value)}
-              >
-                {trackedStocks.map((stock) => (
-                  <option key={stock.ticker} value={stock.ticker}>{stock.name} ({stock.ticker})</option>
-                ))}
-              </select>
-            </div>
-            <div id="stock-content" className="content-area">
-              <p>Content for {selectedStock} will be displayed here.</p>
-            </div>
+            <StockTrackerPage />
           </section>
         )}
 

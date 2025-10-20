@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy the requirements file into the container at /app
 COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Upgrade pip and install packages efficiently
+RUN pip install --upgrade pip wheel && \
+    pip install --no-cache-dir --prefer-binary -r requirements.txt
 
 # Copy the rest of the application's code
 COPY . .
