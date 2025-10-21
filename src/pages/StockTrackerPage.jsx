@@ -138,11 +138,6 @@ function StockTrackerPage() {
               />
             </svg>
           </button>
-          <button onClick={handleForceRefresh} className="refresh-button" title="Refresh news summary">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
-              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
-            </svg>
-          </button>
         </div>
         <div className="ai-info-container">
           <span className="ai-badge">AI Generated Content</span>
@@ -150,35 +145,28 @@ function StockTrackerPage() {
         </div>
       </div>
       <div id="stock-content" className="content-area">
-        {isLoading && <p className="loading-text">Generating news summary for {selectedStock?.name}...</p>}
-        {error && <p className="error-text">Error: {error}</p>}
-        {!isLoading && localAnalysis && (
-          <div className="analysis-container">
-            <div className="analysis-section">
+        <div className="analysis-container">
+          <div className="analysis-section">
+            <div className="analysis-section-header">
               <h4>Recent News Summary (Last 48 hours)</h4>
-              <MarkdownDisplay>{localAnalysis.news_summary}</MarkdownDisplay>
+              <button onClick={handleForceRefresh} className="refresh-button" title="Refresh news summary">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/></svg>
+              </button>
             </div>
-            <div className="analysis-section">
-              <h4>SWOT Analysis</h4>
-              <MarkdownDisplay>{localAnalysis.swot_analysis}</MarkdownDisplay>
-            </div>
-            <div className="analysis-section">
-              <h4>Top Competitors</h4>
-              <MarkdownDisplay>{localAnalysis.competitors}</MarkdownDisplay>
-            </div>
-            <div className="analysis-section">
-              <h4>Recent Earnings Summary</h4>
-              <MarkdownDisplay>{localAnalysis.earnings_summary}</MarkdownDisplay>
-            </div>
-            <div className="analysis-section">
-              <h4>Market Risks</h4>
-              <MarkdownDisplay>{localAnalysis.risks}</MarkdownDisplay>
-            </div>
-            <p className="disclaimer">
-              <i>AI-generated summary. Information may be inaccurate. Please verify with primary sources.</i>
-            </p>
+            {isLoading && <p className="loading-text">Generating news summary for {selectedStock?.name}...</p>}
+            {error && <p className="error-text">Error: {error}</p>}
+            {!isLoading && localAnalysis && <MarkdownDisplay>{localAnalysis.news_summary}</MarkdownDisplay>}
           </div>
-        )}
+          <div className="analysis-section">
+            <h4>Business Overview & Analysis</h4>
+            {/* Content will be added here in the future */}
+          </div>
+          <p className="disclaimer">
+            <i>
+              AI-generated summary. Information may be inaccurate. Please verify with primary sources.
+            </i>
+          </p>
+        </div>
       </div>
     </>
   );

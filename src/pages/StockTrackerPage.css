@@ -14,6 +14,11 @@
     flex-wrap: wrap; /* Allow controls to wrap if needed on very small screens */
 }
 
+.sub-nav-controls .edit-list-button {
+    /* Apply margin only to the edit button now */
+    margin-left: 1rem;
+}
+
 .edit-list-button,
 .refresh-button {
     background-color: var(--surface-variant-color);
@@ -35,6 +40,7 @@
 
 .edit-list-button:hover,
 .refresh-button:hover {
+    background-color: var(--surface-variant-color);
     border-color: var(--on-surface-color);
 }
 
@@ -86,9 +92,16 @@
     border: 1px solid var(--border-color);
 }
 
+.analysis-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
 .analysis-section h4 {
     margin-top: 0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0; /* Reset margin as it's now handled by the header container */
     color: var(--primary-color);
 }
 
