@@ -40,6 +40,28 @@ function StockTrackerPage() {
       setError(null);
       setAnalysis(null);
 
+      const cacheKey = 'stockNewsCache';
+      const ticker = selectedStock.ticker;
+
+      // Check for cached data first
+      try {
+        const cachedStore = JSON.parse(localStorage.getItem(cacheKey));
+        if (cachedStore && cachedStore[ticker]) {
+          const { timestamp, data } = cachedStore[ticker];
+          const age = Date.now() - timestamp;
+          const sixHours = 6 * 3600 * 1000;
+
+          if (age < sixHours) {
+            setAnalysis(data);
+            setIsLoading(false);
+            return; // Use cached data and skip fetch
+          }
+        }
+      } catch (e) {
+        console.error("Failed to read from cache", e);
+        // If cache is corrupt, we'll just fetch new data
+      }
+
       try {
         const response = await fetch('https://keskid83-stock-analysis-api.hf.space/stock-analysis', {
           method: 'POST',
@@ -54,6 +76,18 @@ function StockTrackerPage() {
 
         const result = await response.json();
         setAnalysis(result);
+
+        // Save the new result to the cache
+        try {
+          const cachedStore = JSON.parse(localStorage.getItem(cacheKey)) || {};
+          cachedStore[ticker] = {
+            timestamp: Date.now(),
+            data: result,
+          };
+          localStorage.setItem(cacheKey, JSON.stringify(cachedStore));
+        } catch (e) {
+          console.error("Failed to write to cache", e);
+        }
       } catch (e) {
         setError(e.message);
       } finally {
@@ -138,7 +172,7 @@ function StockTrackerPage() {
         </button>
       </div>
       <div id="stock-content" className="content-area">
-        {isLoading && <p className="loading-text">Analysing {selectedStock?.name}...</p>}
+        {isLoading && <p className="loading-text">Generating news summary for {selectedStock?.name}...</p>}
         {error && <p className="error-text">Error: {error}</p>}
         {analysis && (
           <div className="analysis-container">

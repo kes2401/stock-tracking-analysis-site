@@ -22,8 +22,9 @@ function FearAndGreedPage() {
           const timestamp = parseInt(cachedTimestamp, 10);
           setLastUpdated(new Date(timestamp));
           const age = Date.now() - timestamp;
+          const oneHour = 3600 * 1000;
           // Use cache if it's less than 1 hour old
-          if (age < 3600000) {
+          if (age < oneHour) {
             setData(JSON.parse(cachedData));
             setLoading(false);
             return;
