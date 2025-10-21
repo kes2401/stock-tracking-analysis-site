@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { trackedStocks as defaultStocks } from '../config/stocks.js';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import MarkdownDisplay from '../components/MarkdownDisplay.jsx';
 import './StockTrackerPage.css';
 
 // Custom hook to manage state with localStorage persistence
@@ -145,48 +144,23 @@ function StockTrackerPage() {
           <div className="analysis-container">
             <div className="analysis-section">
               <h4>Recent News Summary (Last 48 hours)</h4>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{ a: props => <a {...props} target="_blank" rel="noopener noreferrer" /> }}
-              >
-                {analysis.news_summary}
-              </ReactMarkdown>
+              <MarkdownDisplay>{analysis.news_summary}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>SWOT Analysis</h4>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{ a: props => <a {...props} target="_blank" rel="noopener noreferrer" /> }}
-              >
-                {analysis.swot_analysis}
-              </ReactMarkdown>
+              <MarkdownDisplay>{analysis.swot_analysis}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>Top Competitors</h4>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{ a: props => <a {...props} target="_blank" rel="noopener noreferrer" /> }}
-              >
-                {analysis.competitors}
-              </ReactMarkdown>
+              <MarkdownDisplay>{analysis.competitors}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>Recent Earnings Summary</h4>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{ a: props => <a {...props} target="_blank" rel="noopener noreferrer" /> }}
-              >
-                {analysis.earnings_summary}
-              </ReactMarkdown>
+              <MarkdownDisplay>{analysis.earnings_summary}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>Market Risks</h4>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{ a: props => <a {...props} target="_blank" rel="noopener noreferrer" /> }}
-              >
-                {analysis.risks}
-              </ReactMarkdown>
+              <MarkdownDisplay>{analysis.risks}</MarkdownDisplay>
             </div>
             <p className="disclaimer">
               <i>AI-generated summary. Information may be inaccurate. Please verify with primary sources.</i>
