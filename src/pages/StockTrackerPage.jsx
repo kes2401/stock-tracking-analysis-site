@@ -157,29 +157,35 @@ function StockTrackerPage() {
   return (
     <>
       <div className="sub-nav-container">
-        <label htmlFor="stock-select">Select Stock:</label>
-        <select
-          id="stock-select"
-          className="dropdown-nav"
-          value={selectedStockTicker}
-          onChange={(e) => setSelectedStockTicker(e.target.value)}
-        >
-          {trackedStocks.map((stock) => (
-            <option key={stock.ticker} value={stock.ticker}>{stock.name} ({stock.ticker})</option>
-          ))}
-        </select>
-        <button onClick={() => setIsEditMode(true)} className="edit-list-button" title="Edit stock list">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-            <path
-              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-            />
-          </svg>
-        </button>
-        <button onClick={() => fetchAnalysis(true)} className="refresh-button" title="Refresh news summary">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
-            <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
-          </svg>
-        </button>
+        <div className="sub-nav-controls">
+          <label htmlFor="stock-select">Select Stock:</label>
+          <select
+            id="stock-select"
+            className="dropdown-nav"
+            value={selectedStockTicker}
+            onChange={(e) => setSelectedStockTicker(e.target.value)}
+          >
+            {trackedStocks.map((stock) => (
+              <option key={stock.ticker} value={stock.ticker}>{stock.name} ({stock.ticker})</option>
+            ))}
+          </select>
+          <button onClick={() => setIsEditMode(true)} className="edit-list-button" title="Edit stock list">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+              <path
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+              />
+            </svg>
+          </button>
+          <button onClick={() => fetchAnalysis(true)} className="refresh-button" title="Refresh news summary">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
+            </svg>
+          </button>
+        </div>
+        <div className="ai-info-container">
+          <span className="ai-badge">AI Generated Content</span>
+          <span className="disclaimer">Powered by Google Gemini</span>
+        </div>
       </div>
       <div id="stock-content" className="content-area">
         {isLoading && <p className="loading-text">Generating news summary for {selectedStock?.name}...</p>}
