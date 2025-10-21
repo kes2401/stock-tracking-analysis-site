@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { trackedStocks as defaultStocks } from '../config/stocks.js';
 import MarkdownDisplay from '../components/MarkdownDisplay.jsx';
 import './StockTrackerPage.css';
+import useCachedFetch from './useCachedFetch.js';
 
 // Custom hook to manage state with localStorage persistence
 const usePersistentState = (key, defaultValue) => {
@@ -21,9 +22,6 @@ function StockTrackerPage() {
   const [trackedStocks, setTrackedStocks] = usePersistentState('trackedStocks', defaultStocks);
   const [selectedStockTicker, setSelectedStockTicker] = usePersistentState('selectedStockTicker', defaultStocks[0]?.ticker || '');
   const [isEditMode, setIsEditMode] = useState(false);
-  const [analysis, setAnalysis] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const [newStockName, setNewStockName] = useState('');
   const [newStockTicker, setNewStockTicker] = useState('');
@@ -32,72 +30,24 @@ function StockTrackerPage() {
     return trackedStocks.find(stock => stock.ticker === selectedStockTicker) || trackedStocks[0];
   }, [selectedStockTicker, trackedStocks]);
 
-  const fetchAnalysis = useCallback(async (ignoreCache = false) => {
-    if (!selectedStock) {
-      return;
+  const cacheKey = useMemo(() => `stockAnalysis_${selectedStock?.ticker}`, [selectedStock]);
+  const SIX_HOURS_MS = 6 * 3600 * 1000;
+
+  const analysisFetcher = async () => {
+    const response = await fetch('https://keskid83-stock-analysis-api.hf.space/stock-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: selectedStock.name, ticker: selectedStock.ticker }),
+    });
+
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.error || `HTTP error! Status: ${response.status}`);
     }
-      setIsLoading(true);
-      setError(null);
-      setAnalysis(null);
+    return response.json();
+  };
 
-    const cacheKey = 'stockNewsCache';
-      const ticker = selectedStock.ticker;
-
-      // Check for cached data first
-      try {
-        const cachedStore = JSON.parse(localStorage.getItem(cacheKey));
-        if (cachedStore && cachedStore[ticker]) {
-          const { timestamp, data } = cachedStore[ticker];
-          const age = Date.now() - timestamp;
-          const sixHours = 6 * 3600 * 1000;
-
-        if (!ignoreCache && age < sixHours) {
-            setAnalysis(data);
-            setIsLoading(false);
-            return; // Use cached data and skip fetch
-          }
-        }
-      } catch (e) {
-        console.error("Failed to read from cache", e);
-        // If cache is corrupt, we'll just fetch new data
-      }
-
-      try {
-        const response = await fetch('https://keskid83-stock-analysis-api.hf.space/stock-analysis', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: selectedStock.name, ticker: selectedStock.ticker }),
-        });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || `HTTP error! Status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        setAnalysis(result);
-
-        // Save the new result to the cache
-        try {
-          const cachedStore = JSON.parse(localStorage.getItem(cacheKey)) || {};
-          cachedStore[ticker] = {
-            timestamp: Date.now(),
-            data: result,
-          };
-          localStorage.setItem(cacheKey, JSON.stringify(cachedStore));
-        } catch (e) {
-          console.error("Failed to write to cache", e);
-        }
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setIsLoading(false);
-      }
-  }, [selectedStock]);
-
-  useEffect(() => {
-    fetchAnalysis();
-  }, [fetchAnalysis]);
+  const { data: analysis, error, isLoading, forceRefresh } = useCachedFetch(cacheKey, analysisFetcher, SIX_HOURS_MS, [selectedStock]);
 
   const handleAddStock = () => {
     if (newStockName.trim() && newStockTicker.trim()) {
@@ -176,7 +126,7 @@ function StockTrackerPage() {
               />
             </svg>
           </button>
-          <button onClick={() => fetchAnalysis(true)} className="refresh-button" title="Refresh news summary">
+          <button onClick={forceRefresh} className="refresh-button" title="Refresh news summary">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
               <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
             </svg>

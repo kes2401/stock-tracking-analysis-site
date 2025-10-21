@@ -1,60 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import GaugeChart from '../components/GaugeChart.jsx';
 import RechartsLineChart from '../components/RechartsLineChart.jsx';
+import useCachedFetch from './useCachedFetch.js';
 import './FearAndGreedPage.css';
 
 const API_URL = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+const CACHE_KEY = 'fearAndGreedData';
+const ONE_HOUR_MS = 3600 * 1000;
 
 function FearAndGreedPage() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(null);
+  const fetcher = async () => {
+    const response = await fetch(API_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Check for cached data
-        const cachedData = localStorage.getItem('fearAndGreedData');
-        const cachedTimestamp = localStorage.getItem('fearAndGreedTimestamp');
+  const { data, isLoading, error } = useCachedFetch(CACHE_KEY, fetcher, ONE_HOUR_MS);
 
-        if (cachedData && cachedTimestamp) {
-          const timestamp = parseInt(cachedTimestamp, 10);
-          setLastUpdated(new Date(timestamp));
-          const age = Date.now() - timestamp;
-          const oneHour = 3600 * 1000;
-          // Use cache if it's less than 1 hour old
-          if (age < oneHour) {
-            setData(JSON.parse(cachedData));
-            setLoading(false);
-            return;
-          }
-        }
+  const lastUpdated = useMemo(() => {
+    const cachedItem = localStorage.getItem(CACHE_KEY);
+    return cachedItem ? new Date(JSON.parse(cachedItem).timestamp) : null;
+  }, [data]);
 
-        // Fetch new data
-        const response = await fetch(API_URL);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        setData(result);
-        const newTimestamp = Date.now();
-        setLastUpdated(new Date(newTimestamp));
-
-        // Cache the new data and timestamp
-        localStorage.setItem('fearAndGreedData', JSON.stringify(result));
-        localStorage.setItem('fearAndGreedTimestamp', newTimestamp.toString());
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <div className="status-message">Loading Fear & Greed Index...</div>;
   }
 
