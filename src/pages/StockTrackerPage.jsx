@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { trackedStocks as defaultStocks } from '../config/stocks.js';
 import MarkdownDisplay from '../components/MarkdownDisplay.jsx';
 import './StockTrackerPage.css';
@@ -32,15 +32,15 @@ function StockTrackerPage() {
     return trackedStocks.find(stock => stock.ticker === selectedStockTicker) || trackedStocks[0];
   }, [selectedStockTicker, trackedStocks]);
 
-  useEffect(() => {
-    if (!selectedStock) return;
-
-    const fetchAnalysis = async () => {
+  const fetchAnalysis = useCallback(async (ignoreCache = false) => {
+    if (!selectedStock) {
+      return;
+    }
       setIsLoading(true);
       setError(null);
       setAnalysis(null);
 
-      const cacheKey = 'stockNewsCache';
+    const cacheKey = 'stockNewsCache';
       const ticker = selectedStock.ticker;
 
       // Check for cached data first
@@ -51,7 +51,7 @@ function StockTrackerPage() {
           const age = Date.now() - timestamp;
           const sixHours = 6 * 3600 * 1000;
 
-          if (age < sixHours) {
+        if (!ignoreCache && age < sixHours) {
             setAnalysis(data);
             setIsLoading(false);
             return; // Use cached data and skip fetch
@@ -93,10 +93,11 @@ function StockTrackerPage() {
       } finally {
         setIsLoading(false);
       }
-    };
-
-    fetchAnalysis();
   }, [selectedStock]);
+
+  useEffect(() => {
+    fetchAnalysis();
+  }, [fetchAnalysis]);
 
   const handleAddStock = () => {
     if (newStockName.trim() && newStockTicker.trim()) {
@@ -172,6 +173,11 @@ function StockTrackerPage() {
             <path
               d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
             />
+          </svg>
+        </button>
+        <button onClick={() => fetchAnalysis(true)} className="refresh-button" title="Refresh news summary">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+            <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
           </svg>
         </button>
       </div>

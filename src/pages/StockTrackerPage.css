@@ -1,6 +1,7 @@
-.edit-list-button {
+.edit-list-button,
+.refresh-button {
     margin-left: 1rem;
-    background-color: var(--surface-variant-color);
+    background-color: var(--surface-color);
     border: 1px solid var(--outline-color);
     border-radius: 6px;
     width: 36px;
@@ -12,11 +13,14 @@
     transition: background-color 0.2s, border-color 0.2s;
 }
 
-.edit-list-button svg {
+.edit-list-button svg,
+.refresh-button svg {
     fill: var(--on-surface-secondary-color);
 }
 
-.edit-list-button:hover {
+.edit-list-button:hover,
+.refresh-button:hover {
+    background-color: var(--surface-variant-color);
     border-color: var(--on-surface-color);
 }
 
