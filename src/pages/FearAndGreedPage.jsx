@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import GaugeChart from '../components/GaugeChart.jsx';
 import RechartsLineChart from '../components/RechartsLineChart.jsx';
 import useCachedFetch from './useCachedFetch.js';
@@ -9,13 +9,13 @@ const CACHE_KEY = 'fearAndGreedData';
 const ONE_HOUR_MS = 3600 * 1000;
 
 function FearAndGreedPage() {
-  const fetcher = async () => {
+  const fetcher = useCallback(async () => {
     const response = await fetch(API_URL);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response.json();
-  };
+  }, []);
 
   const { data, isLoading, error } = useCachedFetch(CACHE_KEY, fetcher, ONE_HOUR_MS);
 

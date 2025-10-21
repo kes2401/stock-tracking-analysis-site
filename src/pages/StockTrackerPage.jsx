@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { trackedStocks as defaultStocks } from '../config/stocks.js';
 import MarkdownDisplay from '../components/MarkdownDisplay.jsx';
 import './StockTrackerPage.css';
@@ -22,6 +22,7 @@ function StockTrackerPage() {
   const [trackedStocks, setTrackedStocks] = usePersistentState('trackedStocks', defaultStocks);
   const [selectedStockTicker, setSelectedStockTicker] = usePersistentState('selectedStockTicker', defaultStocks[0]?.ticker || '');
   const [isEditMode, setIsEditMode] = useState(false);
+  const [localAnalysis, setLocalAnalysis] = useState(null);
 
   const [newStockName, setNewStockName] = useState('');
   const [newStockTicker, setNewStockTicker] = useState('');
@@ -33,7 +34,7 @@ function StockTrackerPage() {
   const cacheKey = useMemo(() => `stockAnalysis_${selectedStock?.ticker}`, [selectedStock]);
   const SIX_HOURS_MS = 6 * 3600 * 1000;
 
-  const analysisFetcher = async () => {
+  const analysisFetcher = useCallback(async () => {
     const response = await fetch('https://keskid83-stock-analysis-api.hf.space/stock-analysis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -45,9 +46,14 @@ function StockTrackerPage() {
       throw new Error(errData.error || `HTTP error! Status: ${response.status}`);
     }
     return response.json();
-  };
+  }, [selectedStock]);
 
-  const { data: analysis, error, isLoading, forceRefresh } = useCachedFetch(cacheKey, analysisFetcher, SIX_HOURS_MS, [selectedStock]);
+  const { data: analysis, error, isLoading, forceRefresh: forceRefreshHook } = useCachedFetch(cacheKey, analysisFetcher, SIX_HOURS_MS, [selectedStock]);
+
+  // Sync local state with fetched data
+  useEffect(() => {
+    setLocalAnalysis(analysis);
+  }, [analysis, setLocalAnalysis]);
 
   const handleAddStock = () => {
     if (newStockName.trim() && newStockTicker.trim()) {
@@ -68,6 +74,12 @@ function StockTrackerPage() {
       setSelectedStockTicker(newStockList[0]?.ticker || '');
     }
   };
+
+  const handleForceRefresh = useCallback(() => {
+    // Immediately clear local data to show loading state
+    setLocalAnalysis(null);
+    forceRefreshHook();
+  }, [forceRefreshHook]);
 
   if (isEditMode) {
     return (
@@ -126,7 +138,7 @@ function StockTrackerPage() {
               />
             </svg>
           </button>
-          <button onClick={forceRefresh} className="refresh-button" title="Refresh news summary">
+          <button onClick={handleForceRefresh} className="refresh-button" title="Refresh news summary">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
               <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
             </svg>
@@ -140,27 +152,27 @@ function StockTrackerPage() {
       <div id="stock-content" className="content-area">
         {isLoading && <p className="loading-text">Generating news summary for {selectedStock?.name}...</p>}
         {error && <p className="error-text">Error: {error}</p>}
-        {analysis && (
+        {!isLoading && localAnalysis && (
           <div className="analysis-container">
             <div className="analysis-section">
               <h4>Recent News Summary (Last 48 hours)</h4>
-              <MarkdownDisplay>{analysis.news_summary}</MarkdownDisplay>
+              <MarkdownDisplay>{localAnalysis.news_summary}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>SWOT Analysis</h4>
-              <MarkdownDisplay>{analysis.swot_analysis}</MarkdownDisplay>
+              <MarkdownDisplay>{localAnalysis.swot_analysis}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>Top Competitors</h4>
-              <MarkdownDisplay>{analysis.competitors}</MarkdownDisplay>
+              <MarkdownDisplay>{localAnalysis.competitors}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>Recent Earnings Summary</h4>
-              <MarkdownDisplay>{analysis.earnings_summary}</MarkdownDisplay>
+              <MarkdownDisplay>{localAnalysis.earnings_summary}</MarkdownDisplay>
             </div>
             <div className="analysis-section">
               <h4>Market Risks</h4>
-              <MarkdownDisplay>{analysis.risks}</MarkdownDisplay>
+              <MarkdownDisplay>{localAnalysis.risks}</MarkdownDisplay>
             </div>
             <p className="disclaimer">
               <i>AI-generated summary. Information may be inaccurate. Please verify with primary sources.</i>
