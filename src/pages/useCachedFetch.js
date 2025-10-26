@@ -16,7 +16,6 @@ const useCachedFetch = (cacheKey, fetcher, cacheDurationMs, dependencies = []) =
   const performFetch = useCallback(async (ignoreCache = false) => {
     setIsLoading(true);
     setError(null);
-    setData(null);
 
     // 1. Check for cached data
     if (!ignoreCache) {

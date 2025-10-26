@@ -99,7 +99,17 @@
     margin-bottom: 0.75rem;
 }
 
-.analysis-section h4 {
+/* Style for headings inside the AI-generated markdown content */
+.analysis-section > div:not(.analysis-section-header) h1,
+.analysis-section > div:not(.analysis-section-header) h2,
+.analysis-section > div:not(.analysis-section-header) h3,
+.analysis-section > div:not(.analysis-section-header) h4,
+.analysis-section > div:not(.analysis-section-header) h5,
+.analysis-section > div:not(.analysis-section-header) h6 {
+    color: var(--on-surface-color); /* Main text color (white) */
+}
+
+.analysis-section-header h4 {
     margin-top: 0;
     margin-bottom: 0; /* Reset margin as it's now handled by the header container */
     color: var(--primary-color);

@@ -22,7 +22,8 @@ function StockTrackerPage() {
   const [trackedStocks, setTrackedStocks] = usePersistentState('trackedStocks', defaultStocks);
   const [selectedStockTicker, setSelectedStockTicker] = usePersistentState('selectedStockTicker', defaultStocks[0]?.ticker || '');
   const [isEditMode, setIsEditMode] = useState(false);
-  const [localAnalysis, setLocalAnalysis] = useState(null);
+  const [newsSummary, setNewsSummary] = useState(null);
+  const [businessAnalysis, setBusinessAnalysis] = useState(null);
 
   const [newStockName, setNewStockName] = useState('');
   const [newStockTicker, setNewStockTicker] = useState('');
@@ -31,29 +32,61 @@ function StockTrackerPage() {
     return trackedStocks.find(stock => stock.ticker === selectedStockTicker) || trackedStocks[0];
   }, [selectedStockTicker, trackedStocks]);
 
-  const cacheKey = useMemo(() => `stockAnalysis_${selectedStock?.ticker}`, [selectedStock]);
+  // --- News Summary Fetching ---
+  const newsCacheKey = useMemo(() => `newsSummary_${selectedStock?.ticker}`, [selectedStock]);
   const SIX_HOURS_MS = 6 * 3600 * 1000;
 
-  const analysisFetcher = useCallback(async () => {
+  const newsFetcher = useCallback(async () => {
     const response = await fetch('https://keskid83-stock-analysis-api.hf.space/stock-analysis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: selectedStock.name, ticker: selectedStock.ticker }),
+      body: JSON.stringify({
+        name: selectedStock.name,
+        ticker: selectedStock.ticker,
+        analysis_types: ['news_summary']
+      }),
     });
 
     if (!response.ok) {
       const errData = await response.json();
       throw new Error(errData.error || `HTTP error! Status: ${response.status}`);
     }
-    return response.json();
+    const result = await response.json();
+    return result.news_summary; // Return only the news summary string
   }, [selectedStock]);
 
-  const { data: analysis, error, isLoading, forceRefresh: forceRefreshHook } = useCachedFetch(cacheKey, analysisFetcher, SIX_HOURS_MS, [selectedStock]);
+  const { data: newsData, error: newsError, isLoading: isNewsLoading, forceRefresh: forceNewsRefreshHook } = useCachedFetch(newsCacheKey, newsFetcher, SIX_HOURS_MS, [selectedStock]);
+
+  // --- Business Analysis Fetching ---
+  const businessAnalysisCacheKey = useMemo(() => `businessAnalysis_${selectedStock?.ticker}`, [selectedStock]);
+  const ONE_WEEK_MS = 7 * 24 * 3600 * 1000;
+
+  const businessAnalysisFetcher = useCallback(async () => {
+    const response = await fetch('https://keskid83-stock-analysis-api.hf.space/stock-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: selectedStock.name,
+        ticker: selectedStock.ticker,
+        analysis_types: ['business_analysis'] 
+      }),
+    });
+    
+    if (!response.ok) { 
+      const errData = await response.json();
+      throw new Error(`HTTP error! Status: ${response.status}`); 
+    }
+    const result = await response.json();
+    return result.business_analysis; // Return only the business analysis string
+  }, [selectedStock]);
+
+  const { data: businessAnalysisData, error: businessAnalysisError, isLoading: isBusinessAnalysisLoading, forceRefresh: forceBusinessAnalysisRefreshHook } = useCachedFetch(businessAnalysisCacheKey, businessAnalysisFetcher, ONE_WEEK_MS, [selectedStock]);
 
   // Sync local state with fetched data
   useEffect(() => {
-    setLocalAnalysis(analysis);
-  }, [analysis, setLocalAnalysis]);
+    setNewsSummary(newsData);
+    setBusinessAnalysis(businessAnalysisData); // This line was missing from the provided context but is necessary
+  }, [newsData, businessAnalysisData, setNewsSummary, setBusinessAnalysis]);
 
   const handleAddStock = () => {
     if (newStockName.trim() && newStockTicker.trim()) {
@@ -76,10 +109,14 @@ function StockTrackerPage() {
   };
 
   const handleForceRefresh = useCallback(() => {
-    // Immediately clear local data to show loading state
-    setLocalAnalysis(null);
-    forceRefreshHook();
-  }, [forceRefreshHook]);
+    setNewsSummary(null);
+    forceNewsRefreshHook();
+  }, [forceNewsRefreshHook]);
+
+  const handleBusinessAnalysisRefresh = useCallback(() => {
+    setBusinessAnalysis(null);
+    forceBusinessAnalysisRefreshHook();
+  }, [forceBusinessAnalysisRefreshHook]);
 
   if (isEditMode) {
     return (
@@ -153,13 +190,20 @@ function StockTrackerPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/></svg>
               </button>
             </div>
-            {isLoading && <p className="loading-text">Generating news summary for {selectedStock?.name}...</p>}
-            {error && <p className="error-text">Error: {error}</p>}
-            {!isLoading && localAnalysis && <MarkdownDisplay>{localAnalysis.news_summary}</MarkdownDisplay>}
+            {isNewsLoading && <p className="loading-text">Generating news summary for {selectedStock?.name}...</p>}
+            {newsError && <p className="error-text">Error: {newsError}</p>}
+            {!isNewsLoading && newsSummary && <MarkdownDisplay>{newsSummary}</MarkdownDisplay>}
           </div>
           <div className="analysis-section">
-            <h4>Business Overview & Analysis</h4>
-            {/* Content will be added here in the future */}
+            <div className="analysis-section-header">
+              <h4>Business Overview & Analysis</h4>
+              <button onClick={handleBusinessAnalysisRefresh} className="refresh-button" title="Refresh business analysis">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/></svg>
+              </button>
+            </div>
+            {isBusinessAnalysisLoading && <p className="loading-text">Generating business analysis for {selectedStock?.name}...</p>}
+            {businessAnalysisError && <p className="error-text">Error: {businessAnalysisError}</p>}
+            {!isBusinessAnalysisLoading && businessAnalysis && <MarkdownDisplay>{businessAnalysis}</MarkdownDisplay>}
           </div>
           <p className="disclaimer">
             <i>
